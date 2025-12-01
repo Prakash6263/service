@@ -27,5 +27,5 @@ jobs:
             cd ${{ secrets.PROJECT_PATH }}
             git pull origin main
             npm install --production
-            pm2 restart service-backend || pm2 start server.js --name service-backend
-            pm2 save
+            /root/.nvm/versions/node/v24.11.1/bin/pm2 restart service-backend || /root/.nvm/versions/node/v24.11.1/bin/pm2 start server.js --name service-backend
+            /root/.nvm/versions/node/v24.11.1/bin/pm2 save

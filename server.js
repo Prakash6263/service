@@ -142,6 +142,7 @@ const ALLOWED_ORIGINS = [
   "http://localhost:3000",
   "http://localhost:5173",
   "https://dr-bike-frontend.vercel.app/",
+  "https://admin.mrbikedoctor.cloud",
 ];
 
 app.use(cors({
