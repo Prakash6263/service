@@ -1,0 +1,4981 @@
+{
+  "info": {
+    "_postman_id": "bikedoctor-api-collection",
+    "name": "BikeDoctor API Collection",
+    "description": "Complete API collection for BikeDoctor Backend - Bike Service Booking Platform\n\nBase URL: http://localhost:8001\n\nMain Prefix: /bikedoctor",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8001",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "API Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": ["{{baseUrl}}"],
+              "path": [""]
+            }
+          }
+        },
+        {
+          "name": "BikeDoctor Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Token",
+      "item": [
+        {
+          "name": "Generate JWT Token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/tokenGenrate/jwtToken",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "tokenGenrate", "jwtToken"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Auth",
+      "item": [
+        {
+          "name": "Register Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin User\",\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\",\n  \"mobile\": \"9876543210\",\n  \"role\": \"Admin\",\n  \"image\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/adminauth/register-admin",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "adminauth", "register-admin"]
+            }
+          }
+        },
+        {
+          "name": "Super Admin Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/adminauth/suadminLogin",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "adminauth", "suadminLogin"]
+            }
+          }
+        },
+        {
+          "name": "Sub Admin Signup",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sub Admin\",\n  \"email\": \"subadmin@example.com\",\n  \"password\": \"password123\",\n  \"mobile\": \"9876543211\",\n  \"role\": \"Subadmin\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/adminauth/subadminsignup",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "adminauth", "subadminsignup"]
+            }
+          }
+        },
+        {
+          "name": "Send OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/adminauth/send-otp",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "adminauth", "send-otp"]
+            }
+          }
+        },
+        {
+          "name": "Verify OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"otp\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/adminauth/verify-otp",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "adminauth", "verify-otp"]
+            }
+          }
+        },
+        {
+          "name": "Get All Admins",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/adminauth/getalladmin",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "adminauth", "getalladmin"]
+            }
+          }
+        },
+        {
+          "name": "Update Admin Status",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/adminauth/update-status/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "adminauth", "update-status", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "admin_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Admin",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/adminauth/deleteadmin/:admin_id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "adminauth", "deleteadmin", ":admin_id"],
+              "variable": [
+                {
+                  "key": "admin_id",
+                  "value": "admin_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Dashboard Counts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/adminauth/dashboard-counts",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "adminauth", "dashboard-counts"]
+            }
+          }
+        },
+        {
+          "name": "Update Admin by ID",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Admin Name\",\n  \"email\": \"updated@example.com\",\n  \"role\": \"Admin\",\n  \"mobile\": \"9876543210\",\n  \"password\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/adminauth/admin/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "adminauth", "admin", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "admin_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"oldPassword\": \"oldpassword123\",\n  \"newPassword\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/adminauth/Changepassword/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "adminauth", "Changepassword", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "admin_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Profile Picture",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/adminauth/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "adminauth", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Get Profile Picture",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/adminauth/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "adminauth", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Get Single Admin",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/adminauth/singleAdmin/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "adminauth", "singleAdmin", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "admin_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Add Admin Permission",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"permissions\": {\n    \"Bookings\": {\n      \"read\": true,\n      \"create\": true,\n      \"update\": true,\n      \"delete\": false\n    },\n    \"Dealers\": {\n      \"read\": true,\n      \"create\": false,\n      \"update\": false,\n      \"delete\": false\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/adminauth/AdminPermission/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "adminauth", "AdminPermission", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "admin_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Admin Permission",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"permissions\": {\n    \"Bookings\": {\n      \"read\": true,\n      \"create\": true,\n      \"update\": true,\n      \"delete\": true\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/adminauth/updatePermission/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "adminauth", "updatePermission", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "admin_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Single Permission",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/adminauth/SinglePermission/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "adminauth", "SinglePermission", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "admin_id_here"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Auth",
+      "item": [
+        {
+          "name": "User Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"9876543210\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/userAuth/userLogin",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "userAuth", "userLogin"]
+            }
+          }
+        },
+        {
+          "name": "OTP Verify",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"9876543210\",\n  \"otp\": \"123456\",\n  \"device_token\": \"fcm_device_token_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/userAuth/otpVerify",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "userAuth", "otpVerify"]
+            }
+          }
+        },
+        {
+          "name": "Resend OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"9876543210\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/userAuth/resendOtp",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "userAuth", "resendOtp"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dealer Auth",
+      "item": [
+        {
+          "name": "Dealer Sign In",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"9876543210\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealerAuth/signin",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealerAuth", "signin"]
+            }
+          }
+        },
+        {
+          "name": "Send OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"9876543210\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealerAuth/sendotp",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealerAuth", "sendotp"]
+            }
+          }
+        },
+        {
+          "name": "Verify OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"9876543210\",\n  \"otp\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealerAuth/verifyotp",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealerAuth", "verifyotp"]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dealer_id\": \"dealer_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealerAuth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealerAuth", "logout"]
+            }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dealer_id\": \"dealer_id_here\",\n  \"oldPassword\": \"oldpass123\",\n  \"newPassword\": \"newpass123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealerAuth/changepassword",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealerAuth", "changepassword"]
+            }
+          }
+        },
+        {
+          "name": "Get Progress",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealerAuth/progress",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealerAuth", "progress"]
+            }
+          }
+        },
+        {
+          "name": "Update Progress",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"completed\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealerAuth/progress/:section",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealerAuth", "progress", ":section"],
+              "variable": [
+                {
+                  "key": "section",
+                  "value": "basic-info"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Basic Info",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ownerName\": \"John Doe\",\n  \"personalEmail\": \"john@example.com\",\n  \"personalPhone\": \"9876543210\",\n  \"alternatePhone\": \"9876543211\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealerAuth/basic-info/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealerAuth", "basic-info", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "dealer_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Location Info",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullAddress\": \"123 Main Street\",\n  \"city\": \"Mumbai\",\n  \"state\": \"Maharashtra\",\n  \"shopPincode\": \"400001\",\n  \"latitude\": 19.076,\n  \"longitude\": 72.8777\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealerAuth/location-info/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealerAuth", "location-info", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "dealer_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Shop Details",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "shopName",
+                  "value": "Best Bike Service",
+                  "type": "text"
+                },
+                {
+                  "key": "shopImages",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealerAuth/shop-details/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealerAuth", "shop-details", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "dealer_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Upload Documents",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "aadharFront",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "aadharBack",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "panCard",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "shopCertificate",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "faceVerificationImage",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealerAuth/upload-documents/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealerAuth", "upload-documents", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "dealer_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Bank Details",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "accountHolderName",
+                  "value": "John Doe",
+                  "type": "text"
+                },
+                {
+                  "key": "bankName",
+                  "value": "HDFC Bank",
+                  "type": "text"
+                },
+                {
+                  "key": "accountNumber",
+                  "value": "1234567890123",
+                  "type": "text"
+                },
+                {
+                  "key": "ifscCode",
+                  "value": "HDFC0001234",
+                  "type": "text"
+                },
+                {
+                  "key": "passbookImage",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealerAuth/bank-details/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealerAuth", "bank-details", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "dealer_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Submit Registration",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealerAuth/submit-registration/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealerAuth", "submit-registration", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "dealer_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Check Approval Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealerAuth/registration-status",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealerAuth", "registration-status"]
+            }
+          }
+        },
+        {
+          "name": "Get Pending Registrations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealerAuth/pending-registrations",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealerAuth", "pending-registrations"]
+            }
+          }
+        },
+        {
+          "name": "Get Dealer Details (Pending)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealerAuth/pending-registrations/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealerAuth", "pending-registrations", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "dealer_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Approve Dealer",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealerAuth/approve/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealerAuth", "approve", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "dealer_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Reject Dealer",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Documents not valid\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealerAuth/reject/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealerAuth", "reject", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "dealer_id_here"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dealers",
+      "item": [
+        {
+          "name": "Add Dealer",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "shopName",
+                  "value": "Best Bike Service",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "dealer@example.com",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "9876543210",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "password123",
+                  "type": "text"
+                },
+                {
+                  "key": "shopPincode",
+                  "value": "400001",
+                  "type": "text"
+                },
+                {
+                  "key": "fullAddress",
+                  "value": "123 Main Street",
+                  "type": "text"
+                },
+                {
+                  "key": "city",
+                  "value": "Mumbai",
+                  "type": "text"
+                },
+                {
+                  "key": "state",
+                  "value": "Maharashtra",
+                  "type": "text"
+                },
+                {
+                  "key": "latitude",
+                  "value": "19.076",
+                  "type": "text"
+                },
+                {
+                  "key": "longitude",
+                  "value": "72.8777",
+                  "type": "text"
+                },
+                {
+                  "key": "ownerName",
+                  "value": "John Doe",
+                  "type": "text"
+                },
+                {
+                  "key": "personalEmail",
+                  "value": "john@example.com",
+                  "type": "text"
+                },
+                {
+                  "key": "personalPhone",
+                  "value": "9876543211",
+                  "type": "text"
+                },
+                {
+                  "key": "alternatePhone",
+                  "value": "9876543212",
+                  "type": "text"
+                },
+                {
+                  "key": "permanentAddress",
+                  "value": "456 Second Street",
+                  "type": "text"
+                },
+                {
+                  "key": "permanentState",
+                  "value": "Maharashtra",
+                  "type": "text"
+                },
+                {
+                  "key": "permanentCity",
+                  "value": "Mumbai",
+                  "type": "text"
+                },
+                {
+                  "key": "presentAddress",
+                  "value": "789 Third Street",
+                  "type": "text"
+                },
+                {
+                  "key": "presentState",
+                  "value": "Maharashtra",
+                  "type": "text"
+                },
+                {
+                  "key": "presentCity",
+                  "value": "Mumbai",
+                  "type": "text"
+                },
+                {
+                  "key": "accountHolderName",
+                  "value": "John Doe",
+                  "type": "text"
+                },
+                {
+                  "key": "ifscCode",
+                  "value": "HDFC0001234",
+                  "type": "text"
+                },
+                {
+                  "key": "bankName",
+                  "value": "HDFC Bank",
+                  "type": "text"
+                },
+                {
+                  "key": "accountNumber",
+                  "value": "1234567890123",
+                  "type": "text"
+                },
+                {
+                  "key": "comission",
+                  "value": "10",
+                  "type": "text"
+                },
+                {
+                  "key": "tax",
+                  "value": "18",
+                  "type": "text"
+                },
+                {
+                  "key": "aadharCardNo",
+                  "value": "123456789012",
+                  "type": "text"
+                },
+                {
+                  "key": "panCardNo",
+                  "value": "ABCDE1234F",
+                  "type": "text"
+                },
+                {
+                  "key": "panCardFront",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "aadharFront",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "aadharBack",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "shopImages",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealer/addDealer",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealer", "addDealer"]
+            }
+          }
+        },
+        {
+          "name": "Get Dealer List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealer/dealerList",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealer", "dealerList"]
+            }
+          }
+        },
+        {
+          "name": "Get Single Dealer",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealer/dealer/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealer", "dealer", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "dealer_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "View Dealer",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealer/view/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealer", "view", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "dealer_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Edit Dealer",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "id",
+                  "value": "dealer_id_here",
+                  "type": "text"
+                },
+                {
+                  "key": "shopName",
+                  "value": "Updated Shop Name",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "updated@example.com",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "9876543210",
+                  "type": "text"
+                },
+                {
+                  "key": "comission",
+                  "value": "15",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealer/editDealer",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealer", "editDealer"]
+            }
+          }
+        },
+        {
+          "name": "Delete Dealer",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dealer_id\": \"dealer_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealer/deleteDealer",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealer", "deleteDealer"]
+            }
+          }
+        },
+        {
+          "name": "Update Dealer Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealer/:id/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealer", ":id", "status"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "dealer_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Status (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dealer_id\": \"dealer_id_here\",\n  \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealer/update_status",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealer", "update_status"]
+            }
+          }
+        },
+        {
+          "name": "Get Dealers Within Range",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealer/dealerWithInRange?latitude=19.076&longitude=72.8777&range=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealer", "dealerWithInRange"],
+              "query": [
+                {
+                  "key": "latitude",
+                  "value": "19.076"
+                },
+                {
+                  "key": "longitude",
+                  "value": "72.8777"
+                },
+                {
+                  "key": "range",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Dealers Within Range 2",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealer/dealerWithInRange2?latitude=19.076&longitude=72.8777&range=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealer", "dealerWithInRange2"],
+              "query": [
+                {
+                  "key": "latitude",
+                  "value": "19.076"
+                },
+                {
+                  "key": "longitude",
+                  "value": "72.8777"
+                },
+                {
+                  "key": "range",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Dealer Wallet",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealer/dealerWallet/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealer", "dealerWallet", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "dealer_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Wallets",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealer/dealerWallet",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealer", "dealerWallet"]
+            }
+          }
+        },
+        {
+          "name": "Get Dealers With Doc False",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealer/dealersWithDocFalse",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealer", "dealersWithDocFalse"]
+            }
+          }
+        },
+        {
+          "name": "Get Dealers With Verify False",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealer/dealersWithVerifyFalse",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealer", "dealersWithVerifyFalse"]
+            }
+          }
+        },
+        {
+          "name": "Get Shop Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealer/getShopDetails/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealer", "getShopDetails", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "dealer_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Process Transaction",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 1000,\n  \"type\": \"credit\",\n  \"description\": \"Payment received\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealer/processTransaction/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealer", "processTransaction", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "dealer_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Add Amount",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 500\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealer/AddAmout/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealer", "AddAmout", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "dealer_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Prepare Transfer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dealer_id\": \"dealer_id_here\",\n  \"amount\": 1000\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealer/prepare-transfer",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealer", "prepare-transfer"]
+            }
+          }
+        },
+        {
+          "name": "Add Shop Details",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "dealer_id",
+                  "value": "dealer_id_here",
+                  "type": "text"
+                },
+                {
+                  "key": "shopImages",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealer/add-shop-details",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealer", "add-shop-details"]
+            }
+          }
+        },
+        {
+          "name": "Add Dealer Documents",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "dealer_id",
+                  "value": "dealer_id_here",
+                  "type": "text"
+                },
+                {
+                  "key": "adharCardFront",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "adharCardBack",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "panCardFront",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "panCardBack",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealer/add-dealer-documents",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealer", "add-dealer-documents"]
+            }
+          }
+        },
+        {
+          "name": "Get Pending Wallets",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealer/pending",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealer", "pending"]
+            }
+          }
+        },
+        {
+          "name": "Update Pending Wallet Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"wallet_id\": \"wallet_id_here\",\n  \"status\": \"approved\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealer/updatepending",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealer", "updatepending"]
+            }
+          }
+        },
+        {
+          "name": "Update Doc Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dealer_id\": \"dealer_id_here\",\n  \"isDoc\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealer/updateDocStatus",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealer", "updateDocStatus"]
+            }
+          }
+        },
+        {
+          "name": "Update Verification",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dealer_id\": \"dealer_id_here\",\n  \"isVerify\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealer/updateVerification",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealer", "updateVerification"]
+            }
+          }
+        },
+        {
+          "name": "Set Dealer Online",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isOnline\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealer/vendor/:dealerId/online",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealer", "vendor", ":dealerId", "online"],
+              "variable": [
+                {
+                  "key": "dealerId",
+                  "value": "dealer_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Active Dealers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/dealer/vendor/active",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "dealer", "vendor", "active"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "Add Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "first_name",
+                  "value": "John",
+                  "type": "text"
+                },
+                {
+                  "key": "last_name",
+                  "value": "Doe",
+                  "type": "text"
+                },
+                {
+                  "key": "state",
+                  "value": "Maharashtra",
+                  "type": "text"
+                },
+                {
+                  "key": "city",
+                  "value": "Mumbai",
+                  "type": "text"
+                },
+                {
+                  "key": "address",
+                  "value": "123 Main Street",
+                  "type": "text"
+                },
+                {
+                  "key": "pincode",
+                  "value": "400001",
+                  "type": "text"
+                },
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/customers/addProfile",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "customers", "addProfile"]
+            }
+          }
+        },
+        {
+          "name": "Get Customer List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/customers/customerlist",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "customers", "customerlist"]
+            }
+          }
+        },
+        {
+          "name": "Get Customer by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/customers/customer/:user_id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "customers", "customer", ":user_id"],
+              "variable": [
+                {
+                  "key": "user_id",
+                  "value": "user_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Customer Data by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/customers/customersdata/:user_id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "customers", "customersdata", ":user_id"],
+              "variable": [
+                {
+                  "key": "user_id",
+                  "value": "user_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Edit Customer",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"email\": \"john@example.com\",\n  \"phone\": \"9876543210\",\n  \"state\": \"Maharashtra\",\n  \"city\": \"Mumbai\",\n  \"address\": \"123 Main Street\",\n  \"pincode\": \"400001\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/customers/editcustomer/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "customers", "editcustomer", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "customer_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Customer",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": \"customer_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/customers/deletecustomer",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "customers", "deletecustomer"]
+            }
+          }
+        },
+        {
+          "name": "Change Profile Image",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/customers/editimage",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "customers", "editimage"]
+            }
+          }
+        },
+        {
+          "name": "Get My Bikes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/customers/getMyBikes",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "customers", "getMyBikes"]
+            }
+          }
+        },
+        {
+          "name": "Add User Bike",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Honda\",\n  \"model\": \"Activa 6G\",\n  \"bike_cc\": \"110\",\n  \"plate_number\": \"MH01AB1234\",\n  \"variant_id\": \"variant_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/customers/addUserBike",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "customers", "addUserBike"]
+            }
+          }
+        },
+        {
+          "name": "Update User Bike",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Honda\",\n  \"model\": \"Activa 6G\",\n  \"bike_cc\": \"125\",\n  \"plate_number\": \"MH01AB1234\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/customers/user-bike/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "customers", "user-bike", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "bike_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete My Bike",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/customers/deleteMyBike/:bike_id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "customers", "deleteMyBike", ":bike_id"],
+              "variable": [
+                {
+                  "key": "bike_id",
+                  "value": "bike_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Upload Single File",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "myFile",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/customers/uploadfile",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "customers", "uploadfile"]
+            }
+          }
+        },
+        {
+          "name": "Upload Multiple Files",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "myFiles",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/customers/uploadmultiple",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "customers", "uploadmultiple"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bikes",
+      "item": [
+        {
+          "name": "Add Bike",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Honda",
+                  "type": "text"
+                },
+                {
+                  "key": "model",
+                  "value": "Activa 6G",
+                  "type": "text"
+                },
+                {
+                  "key": "bike_cc",
+                  "value": "110",
+                  "type": "text"
+                },
+                {
+                  "key": "extra_charges",
+                  "value": "50",
+                  "type": "text"
+                },
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bike/addBike",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bike", "addBike"]
+            }
+          }
+        },
+        {
+          "name": "Get Bike List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bike/bikeList",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bike", "bikeList"]
+            }
+          }
+        },
+        {
+          "name": "Get All Bikes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bike/bikes",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bike", "bikes"]
+            }
+          }
+        },
+        {
+          "name": "Get Bike by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bike/getBike/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bike", "getBike", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "bike_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Edit Bike",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Honda\",\n  \"model\": \"Activa 125\",\n  \"bike_cc\": \"125\",\n  \"extra_charges\": 60\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bike/editBike/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bike", "editBike", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "bike_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Bike",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bike/deleteBike/:user_id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bike", "deleteBike", ":user_id"],
+              "variable": [
+                {
+                  "key": "user_id",
+                  "value": "bike_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Add Bike Company",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Honda\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bike/add-bike-company",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bike", "add-bike-company"]
+            }
+          }
+        },
+        {
+          "name": "Add Bike Model",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"company_id\": \"company_id_here\",\n  \"name\": \"Activa 6G\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bike/add-bike-model",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bike", "add-bike-model"]
+            }
+          }
+        },
+        {
+          "name": "Add Bike Variant",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model_id\": \"model_id_here\",\n  \"name\": \"Standard\",\n  \"cc\": 110\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bike/add-bike-variant",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bike", "add-bike-variant"]
+            }
+          }
+        },
+        {
+          "name": "Get Bike Companies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bike/get-bike-companies",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bike", "get-bike-companies"]
+            }
+          }
+        },
+        {
+          "name": "Get Bike Models by Company",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bike/get-bike-models/:company_id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bike", "get-bike-models", ":company_id"],
+              "variable": [
+                {
+                  "key": "company_id",
+                  "value": "company_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Bike Variants by Model",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bike/get-bike-variants/:model_id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bike", "get-bike-variants", ":model_id"],
+              "variable": [
+                {
+                  "key": "model_id",
+                  "value": "model_id_here"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Services",
+      "item": [
+        {
+          "name": "Add Service",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "General Service",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Complete bike servicing",
+                  "type": "text"
+                },
+                {
+                  "key": "dealer_id",
+                  "value": "dealer_id_here",
+                  "type": "text"
+                },
+                {
+                  "key": "bikes",
+                  "value": "[{\"cc\": 110, \"price\": 500}, {\"cc\": 150, \"price\": 700}]",
+                  "type": "text"
+                },
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/service/addservice",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "addservice"]
+            }
+          }
+        },
+        {
+          "name": "Get Service List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/service/servicelist",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "servicelist"]
+            }
+          }
+        },
+        {
+          "name": "Get Service by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/service/service/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "service", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "service_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Edit Service by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/service/edit-service/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "edit-service", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "service_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Service by ID",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Updated Service Name",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Updated description",
+                  "type": "text"
+                },
+                {
+                  "key": "dealer_id",
+                  "value": "dealer_id_here",
+                  "type": "text"
+                },
+                {
+                  "key": "bikes",
+                  "value": "[{\"cc\": 110, \"price\": 600}, {\"cc\": 150, \"price\": 800}]",
+                  "type": "text"
+                },
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/service/update-service/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "update-service", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "service_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Service",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "service_id",
+                  "value": "service_id_here",
+                  "type": "text"
+                },
+                {
+                  "key": "name",
+                  "value": "Updated Service Name",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Updated description",
+                  "type": "text"
+                },
+                {
+                  "key": "dealer_id",
+                  "value": "dealer_id_here",
+                  "type": "text"
+                },
+                {
+                  "key": "service_image",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/service/updateservice",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "updateservice"]
+            }
+          }
+        },
+        {
+          "name": "Delete Service",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"service_id\": \"service_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/service/deleteService",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "deleteService"]
+            }
+          }
+        },
+        {
+          "name": "Get Services by Dealer",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/service/dealer/:dealer_id",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "dealer", ":dealer_id"],
+              "variable": [
+                {
+                  "key": "dealer_id",
+                  "value": "dealer_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Add Admin Service",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Admin Service",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Service description",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/service/adminservices/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "adminservices", "create"]
+            }
+          }
+        },
+        {
+          "name": "Get Admin Services",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/service/adminservices",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "adminservices"]
+            }
+          }
+        },
+        {
+          "name": "Create Additional Service",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Oil Change",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Engine oil change service",
+                  "type": "text"
+                },
+                {
+                  "key": "dealer_id",
+                  "value": "dealer_id_here",
+                  "type": "text"
+                },
+                {
+                  "key": "bikes",
+                  "value": "[{\"cc\": 110, \"price\": 300}, {\"cc\": 150, \"price\": 400}]",
+                  "type": "text"
+                },
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/service/create-additional-service",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "create-additional-service"]
+            }
+          }
+        },
+        {
+          "name": "Get Additional Service List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/service/additionalservicelist",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "additionalservicelist"]
+            }
+          }
+        },
+        {
+          "name": "Get Additional Service by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/service/getAdditionalService/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "getAdditionalService", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "service_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Additional Service",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Updated Oil Change",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Updated description",
+                  "type": "text"
+                },
+                {
+                  "key": "dealer_id",
+                  "value": "dealer_id_here",
+                  "type": "text"
+                },
+                {
+                  "key": "bikes",
+                  "value": "[{\"cc\": 110, \"price\": 350}]",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/service/updateAdditionalService/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "updateAdditionalService", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "service_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Additional Service",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/service/deleteAdditionalService/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "deleteAdditionalService", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "service_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Pickup and Drop",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pickup_address\": \"123 Main Street\",\n  \"drop_address\": \"456 Second Street\",\n  \"booking_id\": \"booking_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/service/PicknDrop",
+              "host": ["{{baseUrl}}"],
+              "path": ["service", "PicknDrop"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Additional Services (Dealer)",
+      "item": [
+        {
+          "name": "Add Service",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Service Name",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/additional-service/add-service",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "additional-service", "add-service"]
+            }
+          }
+        },
+        {
+          "name": "Get All Additional Services",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/additional-service/all-additional-services",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "additional-service", "all-additional-services"]
+            }
+          }
+        },
+        {
+          "name": "Get Single Additional Service",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/additional-service/single-additional-service/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "additional-service", "single-additional-service", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "service_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Additional Service",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Updated Name",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/additional-service/updated-additional-service/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "additional-service", "updated-additional-service", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "service_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Additional Service",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/additional-service/delete-additional-service/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "additional-service", "delete-additional-service", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "service_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Services by Dealer ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/additional-service/:dealerId",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "additional-service", ":dealerId"],
+              "variable": [
+                {
+                  "key": "dealerId",
+                  "value": "dealer_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Save Selected Services",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dealer_id\": \"dealer_id_here\",\n  \"service_ids\": [\"service_id_1\", \"service_id_2\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/additional-service/select-services",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "additional-service", "select-services"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bookings",
+      "item": [
+        {
+          "name": "Add Booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"Servicelist\": [\n    {\n      \"_id\": \"service_id_here\",\n      \"dealerId\": \"dealer_id_here\",\n      \"name\": \"General Service\",\n      \"price\": 500\n    }\n  ],\n  \"bullet_points\": [\"Oil change\", \"Brake check\"],\n  \"additonal_options\": [],\n  \"bike_id\": \"bike_id_here\",\n  \"area\": \"andheri\",\n  \"city\": \"mumbai\",\n  \"address\": \"123 Main Street, Andheri West\",\n  \"description\": \"Please service my bike\",\n  \"estimated_cost\": 500,\n  \"additonal_data_moveable\": []\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bookings/addbooking/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bookings", "addbooking", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "dealer_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"user_id_here\",\n  \"dealer_id\": \"dealer_id_here\",\n  \"services\": [\"service_id_1\", \"service_id_2\"],\n  \"additionalServices\": [\"additional_service_id\"],\n  \"userBike_id\": \"user_bike_id_here\",\n  \"address\": \"123 Main Street\",\n  \"city\": \"Mumbai\",\n  \"area\": \"Andheri\",\n  \"latitude\": 19.076,\n  \"longitude\": 72.8777,\n  \"scheduled_date\": \"2024-01-15\",\n  \"scheduled_time\": \"10:00 AM\",\n  \"description\": \"Please service my bike\",\n  \"pickupAndDropId\": \"pickup_drop_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bookings/createBooking",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bookings", "createBooking"]
+            }
+          }
+        },
+        {
+          "name": "Get All Bookings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bookings/getallbookings",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bookings", "getallbookings"]
+            }
+          }
+        },
+        {
+          "name": "Get User Bookings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bookings/getuserbookings/:user_id?user_type=4",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bookings", "getuserbookings", ":user_id"],
+              "query": [
+                {
+                  "key": "user_type",
+                  "value": "4",
+                  "description": "4 for user, 2 for dealer"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "user_id",
+                  "value": "user_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Booking by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bookings/getbooking/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bookings", "getbooking", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "booking_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Booking Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bookings/getBookingDetails/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bookings", "getBookingDetails", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "booking_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Booking",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"address\": \"Updated address\",\n  \"description\": \"Updated description\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bookings/updatebooking/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bookings", "updatebooking", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "booking_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Booking (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"booking_id\": \"booking_id_here\",\n  \"status\": \"confirmed\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bookings/updateBooking",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bookings", "updateBooking"]
+            }
+          }
+        },
+        {
+          "name": "Update Booking Status",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"confirmed\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bookings/updateBookingStatus/:bookingId/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bookings", "updateBookingStatus", ":bookingId", "status"],
+              "variable": [
+                {
+                  "key": "bookingId",
+                  "value": "booking_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Booking",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"booking_id\": \"booking_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bookings/deletebooking",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bookings", "deletebooking"]
+            }
+          }
+        },
+        {
+          "name": "Send Booking OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"booking_id\": \"booking_id_here\",\n  \"email\": \"user@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bookings/sendBookingOTP",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bookings", "sendBookingOTP"]
+            }
+          }
+        },
+        {
+          "name": "Send Booking Mobile OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"booking_id\": \"booking_id_here\",\n  \"phone\": \"9876543210\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bookings/sendBookingMobile",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bookings", "sendBookingMobile"]
+            }
+          }
+        },
+        {
+          "name": "Verify Booking OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"booking_id\": \"booking_id_here\",\n  \"otp\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bookings/verifyBookingOTP",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bookings", "verifyBookingOTP"]
+            }
+          }
+        },
+        {
+          "name": "Verify Booking Mobile OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"booking_id\": \"booking_id_here\",\n  \"otp\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bookings/verifyBookingMobile",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bookings", "verifyBookingMobile"]
+            }
+          }
+        },
+        {
+          "name": "Update Pickup Status",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"booking_id\": \"booking_id_here\",\n  \"pickup_status\": \"picked_up\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bookings/update-pickup-status",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bookings", "update-pickup-status"]
+            }
+          }
+        },
+        {
+          "name": "Add Note to Booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"booking_id\": \"booking_id_here\",\n  \"note\": \"Customer requested early pickup\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bookings/addNote",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bookings", "addNote"]
+            }
+          }
+        },
+        {
+          "name": "Get Notes from Booking",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bookings/getNotes/:bookingId",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bookings", "getNotes", ":bookingId"],
+              "variable": [
+                {
+                  "key": "bookingId",
+                  "value": "booking_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Note in Booking",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"booking_id\": \"booking_id_here\",\n  \"note_id\": \"note_id_here\",\n  \"note\": \"Updated note content\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bookings/updateNote",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bookings", "updateNote"]
+            }
+          }
+        },
+        {
+          "name": "Delete Note from Booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"booking_id\": \"booking_id_here\",\n  \"note_id\": \"note_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bookings/deleteNote",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bookings", "deleteNote"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Banners",
+      "item": [
+        {
+          "name": "Add Banner",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Summer Sale",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Get 20% off on all services",
+                  "type": "text"
+                },
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/banner/addbanner",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "banner", "addbanner"]
+            }
+          }
+        },
+        {
+          "name": "Get Banner List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/banner/bannerlist",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "banner", "bannerlist"]
+            }
+          }
+        },
+        {
+          "name": "Edit Banner",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"banner_id\": \"banner_id_here\",\n  \"title\": \"Updated Banner Title\",\n  \"description\": \"Updated description\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/banner/editbanner",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "banner", "editbanner"]
+            }
+          }
+        },
+        {
+          "name": "Delete Banner",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"banner_id\": \"banner_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/banner/deletebanner",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "banner", "deletebanner"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Offers",
+      "item": [
+        {
+          "name": "Add Offer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"service_id\": \"service_id_here\",\n  \"promo_code\": \"SUMMER20\",\n  \"start_date\": \"2024-01-01\",\n  \"end_date\": \"2024-03-31\",\n  \"discount\": 20,\n  \"minorderamt\": 500\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/offer/addoffer",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "offer", "addoffer"]
+            }
+          }
+        },
+        {
+          "name": "Get Offer List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/offer/offerlist",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "offer", "offerlist"]
+            }
+          }
+        },
+        {
+          "name": "Get Single Offer",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/offer/Singleoffer/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "offer", "Singleoffer", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "offer_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Edit Offer",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"promo_code\": \"SUMMER25\",\n  \"start_date\": \"2024-01-01\",\n  \"end_date\": \"2024-04-30\",\n  \"city\": \"Mumbai\",\n  \"discount\": 25,\n  \"minorderamt\": 400\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/offer/editoffer/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "offer", "editoffer", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "offer_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Offer",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"offer_id\": \"offer_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/offer/deleteoffer",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "offer", "deleteoffer"]
+            }
+          }
+        },
+        {
+          "name": "Apply Promo Code",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"promo_code\": \"SUMMER20\",\n  \"service_id\": \"service_id_here\",\n  \"order_amount\": 1000\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/offer/applyPromo",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "offer", "applyPromo"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "Initiate Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"booking_id\": \"booking_id_here\",\n  \"amount\": 1000,\n  \"user_id\": \"user_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/payment/initiate",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "payment", "initiate"]
+            }
+          }
+        },
+        {
+          "name": "Create Checkout URL",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"booking_id\": \"booking_id_here\",\n  \"amount\": 1000,\n  \"customer_name\": \"John Doe\",\n  \"customer_email\": \"john@example.com\",\n  \"customer_phone\": \"9876543210\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/payment/create-checkout",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "payment", "create-checkout"]
+            }
+          }
+        },
+        {
+          "name": "Create Checkout Session",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"booking_id\": \"booking_id_here\",\n  \"amount\": 1000,\n  \"return_url\": \"https://example.com/success\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/payment/create-checkout-session",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "payment", "create-checkout-session"]
+            }
+          }
+        },
+        {
+          "name": "Create Payment Link",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"booking_id\": \"booking_id_here\",\n  \"amount\": 1000,\n  \"description\": \"Bike service payment\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/payment/link",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "payment", "link"]
+            }
+          }
+        },
+        {
+          "name": "Get Payment by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/payment/single-payment-detail/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "payment", "single-payment-detail", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "payment_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Payment Webhook",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/payment/webhook",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "payment", "webhook"]
+            }
+          }
+        },
+        {
+          "name": "Get Bill by Booking ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/payment/bills/booking/:booking_id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "payment", "bills", "booking", ":booking_id"],
+              "variable": [
+                {
+                  "key": "booking_id",
+                  "value": "booking_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Bills",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/payment/bills/all",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "payment", "bills", "all"]
+            }
+          }
+        },
+        {
+          "name": "Get User Bills Simple",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/payment/user/:user_id/bills/simple",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "payment", "user", ":user_id", "bills", "simple"],
+              "variable": [
+                {
+                  "key": "user_id",
+                  "value": "user_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User Bill Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/payment/user/:user_id/bills/:bill_id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "payment", "user", ":user_id", "bills", ":bill_id"],
+              "variable": [
+                {
+                  "key": "user_id",
+                  "value": "user_id_here"
+                },
+                {
+                  "key": "bill_id",
+                  "value": "bill_id_here"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Locations",
+      "item": [
+        {
+          "name": "Add Location",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Mumbai",
+                  "type": "text"
+                },
+                {
+                  "key": "latitude",
+                  "value": "19.076",
+                  "type": "text"
+                },
+                {
+                  "key": "longitude",
+                  "value": "72.8777",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/locations/addlocations",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "locations", "addlocations"]
+            }
+          }
+        },
+        {
+          "name": "Get Locations List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/locations/locationslist",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "locations", "locationslist"]
+            }
+          }
+        },
+        {
+          "name": "Edit Location",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "location_id",
+                  "value": "location_id_here",
+                  "type": "text"
+                },
+                {
+                  "key": "name",
+                  "value": "Updated Location",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/locations/editlocations",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "locations", "editlocations"]
+            }
+          }
+        },
+        {
+          "name": "Delete Location",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"location_id\": \"location_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/locations/deletelocations",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "locations", "deletelocations"]
+            }
+          }
+        },
+        {
+          "name": "Get Current Location",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/locations/currentlocation",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "locations", "currentlocation"]
+            }
+          }
+        },
+        {
+          "name": "Get Current Address",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"latitude\": 19.076,\n  \"longitude\": 72.8777\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/locations/currentaddress",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "locations", "currentaddress"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "State & City",
+      "item": [
+        {
+          "name": "Get All States",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/statencity/allState",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "statencity", "allState"]
+            }
+          }
+        },
+        {
+          "name": "Get Cities by State",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"state\": \"Maharashtra\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/statencity/allCity",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "statencity", "allCity"]
+            }
+          }
+        },
+        {
+          "name": "Get All State Data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/location/getAllStateData",
+              "host": ["{{baseUrl}}"],
+              "path": ["location", "getAllStateData"]
+            }
+          }
+        },
+        {
+          "name": "Get City By State ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/location/getCityByState/:stateId",
+              "host": ["{{baseUrl}}"],
+              "path": ["location", "getCityByState", ":stateId"],
+              "variable": [
+                {
+                  "key": "stateId",
+                  "value": "state_id_here"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bank",
+      "item": [
+        {
+          "name": "Add Bank",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dealer_id\": \"dealer_id_here\",\n  \"account_holder_name\": \"John Doe\",\n  \"bank_name\": \"HDFC Bank\",\n  \"account_number\": \"1234567890123\",\n  \"ifsc_code\": \"HDFC0001234\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bank/addbank",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bank", "addbank"]
+            }
+          }
+        },
+        {
+          "name": "Get Bank List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bank/banklist",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bank", "banklist"]
+            }
+          }
+        },
+        {
+          "name": "Get All Banks",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bank/getallbanks",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bank", "getallbanks"]
+            }
+          }
+        },
+        {
+          "name": "Edit Bank",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bank_id\": \"bank_id_here\",\n  \"account_holder_name\": \"John Doe Updated\",\n  \"bank_name\": \"ICICI Bank\",\n  \"account_number\": \"9876543210123\",\n  \"ifsc_code\": \"ICIC0001234\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bank/editbank",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bank", "editbank"]
+            }
+          }
+        },
+        {
+          "name": "Delete Bank",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bank_id\": \"bank_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/bank/deletebank",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "bank", "deletebank"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ratings",
+      "item": [
+        {
+          "name": "Add Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"user_id_here\",\n  \"dealer_id\": \"dealer_id_here\",\n  \"booking_id\": \"booking_id_here\",\n  \"rating\": 5,\n  \"review\": \"Excellent service!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/rating/add",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "rating", "add"]
+            }
+          }
+        },
+        {
+          "name": "Get All Reviews",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/rating/list",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "rating", "list"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "Add Report",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"user_id_here\",\n  \"subject\": \"Issue with booking\",\n  \"description\": \"My booking was cancelled without notice\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/report/add",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "report", "add"]
+            }
+          }
+        },
+        {
+          "name": "Get All Reports",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/report/getAll",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "report", "getAll"]
+            }
+          }
+        },
+        {
+          "name": "Get Single Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/report/getSingle/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "report", "getSingle", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "report_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Reply to Report (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reply\": \"We apologize for the inconvenience. Your issue has been resolved.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/report/update/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "report", "update", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "report_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Reports by User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/report/getByuser?user_id=user_id_here",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "report", "getByuser"],
+              "query": [
+                {
+                  "key": "user_id",
+                  "value": "user_id_here"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Rewards",
+      "item": [
+        {
+          "name": "Create Reward",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"user_id_here\",\n  \"booking_id\": \"booking_id_here\",\n  \"points\": 100,\n  \"description\": \"Reward for completing booking\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/reward/create-reward",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "reward", "create-reward"]
+            }
+          }
+        },
+        {
+          "name": "Get User Rewards",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/reward/user-rewards?user_id=user_id_here",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "reward", "user-rewards"],
+              "query": [
+                {
+                  "key": "user_id",
+                  "value": "user_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Scratch Reward",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reward_id\": \"reward_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/reward/scratch-reward",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "reward", "scratch-reward"]
+            }
+          }
+        },
+        {
+          "name": "Apply Reward Points",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"user_id_here\",\n  \"points\": 50,\n  \"booking_id\": \"booking_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/reward/apply-reward-points",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "reward", "apply-reward-points"]
+            }
+          }
+        },
+        {
+          "name": "Get All Rewards",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/reward/rewards",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "reward", "rewards"]
+            }
+          }
+        },
+        {
+          "name": "Get Reward Points",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/reward/rewardPoints?user_id=user_id_here",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "reward", "rewardPoints"],
+              "query": [
+                {
+                  "key": "user_id",
+                  "value": "user_id_here"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tickets",
+      "item": [
+        {
+          "name": "Create Ticket",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subject\": \"Payment issue\",\n  \"description\": \"My payment was deducted but booking not confirmed\",\n  \"category\": \"payment\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/ticket/create/:user_id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "ticket", "create", ":user_id"],
+              "variable": [
+                {
+                  "key": "user_id",
+                  "value": "user_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Reply to Ticket",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"We are looking into your issue\",\n  \"sender_type\": \"admin\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/ticket/reply/:ticket_id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "ticket", "reply", ":ticket_id"],
+              "variable": [
+                {
+                  "key": "ticket_id",
+                  "value": "ticket_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get My Tickets",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/ticket/my-tickets/:user_id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "ticket", "my-tickets", ":user_id"],
+              "variable": [
+                {
+                  "key": "user_id",
+                  "value": "user_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All User & Dealer Tickets",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/ticket/user-dealer",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "ticket", "user-dealer"]
+            }
+          }
+        },
+        {
+          "name": "Update Ticket Status",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"resolved\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/ticket/status/:ticket_id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "ticket", "status", ":ticket_id"],
+              "variable": [
+                {
+                  "key": "ticket_id",
+                  "value": "ticket_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Ticket by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/ticket/tickets/:ticket_id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "ticket", "tickets", ":ticket_id"],
+              "variable": [
+                {
+                  "key": "ticket_id",
+                  "value": "ticket_id_here"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tracking",
+      "item": [
+        {
+          "name": "Get All Tracking",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/trackings/alltrackbooking",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "trackings", "alltrackbooking"]
+            }
+          }
+        },
+        {
+          "name": "Get Tracking by Booking ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/trackings/trackbooking/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "trackings", "trackbooking", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "booking_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Tracking",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"in_progress\",\n  \"description\": \"Service started\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/trackings/updatetracking/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "trackings", "updatetracking", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "tracking_id_here"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pickup & Drop",
+      "item": [
+        {
+          "name": "Add Pickup & Drop",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pickup_address\": \"123 Main Street, Andheri\",\n  \"drop_address\": \"456 Second Street, Bandra\",\n  \"pickup_latitude\": 19.1136,\n  \"pickup_longitude\": 72.8697,\n  \"drop_latitude\": 19.0596,\n  \"drop_longitude\": 72.8295,\n  \"booking_id\": \"booking_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/pickndrop/addpickndrop",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "pickndrop", "addpickndrop"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Get Notifications by Receiver ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/notification/:receiverId",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "notification", ":receiverId"],
+              "variable": [
+                {
+                  "key": "receiverId",
+                  "value": "receiver_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Notification",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/notification/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "notification", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "notification_id_here"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Policy",
+      "item": [
+        {
+          "name": "Create Policy",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"privacy_policy\",\n  \"title\": \"Privacy Policy\",\n  \"content\": \"<p>This is our privacy policy content...</p>\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/policy",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "policy"]
+            }
+          }
+        },
+        {
+          "name": "Get All Policies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/policies",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "policies"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Service Features",
+      "item": [
+        {
+          "name": "Add Feature",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Free Pickup",
+                  "type": "text"
+                },
+                {
+                  "key": "service_id",
+                  "value": "service_id_here",
+                  "type": "text"
+                },
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/servicefeature/addfeature",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "servicefeature", "addfeature"]
+            }
+          }
+        },
+        {
+          "name": "Get All Features",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/servicefeature/getallfeature",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "servicefeature", "getallfeature"]
+            }
+          }
+        },
+        {
+          "name": "Get Feature by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/servicefeature/getfeature/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "servicefeature", "getfeature", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "feature_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Feature",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Feature Name\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/servicefeature/updatefeature/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "servicefeature", "updatefeature", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "feature_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Feature",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"feature_id\": \"feature_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/servicefeature/deletefeature",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "servicefeature", "deletefeature"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Service Salient Features",
+      "item": [
+        {
+          "name": "Add Salient Feature",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Warranty Included\",\n  \"service_id\": \"service_id_here\",\n  \"description\": \"6 months warranty on service\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/servicesalientfeature/addfeature",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "servicesalientfeature", "addfeature"]
+            }
+          }
+        },
+        {
+          "name": "Get All Salient Features",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/servicesalientfeature/getallfeature",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "servicesalientfeature", "getallfeature"]
+            }
+          }
+        },
+        {
+          "name": "Get Salient Feature by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/servicesalientfeature/getfeature/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "servicesalientfeature", "getfeature", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "feature_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Salient Feature",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Salient Feature\",\n  \"description\": \"Updated description\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/servicesalientfeature/updatefeature/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "servicesalientfeature", "updatefeature", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "feature_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Salient Feature",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"feature_id\": \"feature_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/servicesalientfeature/deletefeature",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "servicesalientfeature", "deletefeature"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Geocode",
+      "item": [
+        {
+          "name": "Geocode Address",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"address\": \"Andheri West, Mumbai, Maharashtra\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/geocode",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "geocode"]
+            }
+          }
+        },
+        {
+          "name": "Geo Place",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"latitude\": 19.076,\n  \"longitude\": 72.8777\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bikedoctor/geo_place",
+              "host": ["{{baseUrl}}"],
+              "path": ["bikedoctor", "geo_place"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "File Upload",
+      "item": [
+        {
+          "name": "Upload Image (Multer Test)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/testmulter",
+              "host": ["{{baseUrl}}"],
+              "path": ["testmulter"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

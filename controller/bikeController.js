@@ -155,124 +155,135 @@ async function bikeList(req, res) {
 }
 
 
+async function deleteBike(req, res) {
+  try {
+    const data = jwt_decode(req.headers.token);
+    const user_id = data.user_id;
+    const user_type = data.user_type;
+    const type = data.type;
+    if (user_id == null || user_type != 1) {
+
+      if (user_type === 3) {
+        const subAdmin = await Admin.findById(user_id)
+
+        if (!subAdmin) {
+          var response = {
+            status: 401,
+            message: "Subadmin not found!",
+          };
+          return res.status(401).send(response);
+        }
+
+        if (user_type === 3) {
+          const subAdmin = await Admin.findById(user_id)
+
+          if (!subAdmin) {
+            var response = {
+              status: 401,
+              message: "Subadmin not found!",
+            };
+            return res.status(401).send(response);
+          }
+        }
+
+        const isAllowed = await checkPermission(user_id, "Bikes.delete");
+
+        if (!isAllowed) {
+          var response = {
+            status: 401,
+            message: "Subadmin does not have permission to delete Bikes!",
+          };
+          return res.status(401).send(response);
+        }
+
+      }
+
+    }
+
+    const { bike_id } = req.body;
+    const bikeRes = await bikeModel.findOne({ id: bike_id });
+    if (bikeRes) {
+      bikeModel.findOneAndDelete({ id: bike_id }, async function (err, docs) {
+        if (err) {
+          var response = {
+            status: 201,
+            message: "Vehicle delete failed",
+          };
+          return res.status(201).send(response);
+        } else {
+          var response = {
+            status: 200,
+            message: "vehicle deleted successfully",
+          };
+          return res.status(200).send(response);
+        }
+      });
+    } else {
+      var response = {
+        status: 201,
+        message: "vehicle not Found",
+      };
+      return res.status(201).send(response);
+    }
+  } catch (error) {
+    console.log("error", error);
+    response = {
+      status: 201,
+      message: "Operation was not successful",
+    };
+    return res.status(201).send(response);
+  }
+}
+
+
 // async function deleteBike(req, res) {
 //   try {
-//     const data = jwt_decode(req.headers.token);
-//     const user_id = data.user_id;
-//     const user_type = data.user_type;
-//     const type = data.type;
-//     if (user_id == null || user_type != 1) {
-
-//       if (user_type === 3) {
-//         const subAdmin = await Admin.findById(user_id)
-
-//         if (!subAdmin) {
-//           var response = {
-//             status: 401,
-//             message: "Subadmin not found!",
-//           };
-//           return res.status(401).send(response);
-//         }
-
-//         if (user_type === 3) {
-//           const subAdmin = await Admin.findById(user_id)
-
-//           if (!subAdmin) {
-//             var response = {
-//               status: 401,
-//               message: "Subadmin not found!",
-//             };
-//             return res.status(401).send(response);
-//           }
-//         }
-
-//         const isAllowed = await checkPermission(user_id, "Bikes.delete");
-
-//         if (!isAllowed) {
-//           var response = {
-//             status: 401,
-//             message: "Subadmin does not have permission to delete Bikes!",
-//           };
-//           return res.status(401).send(response);
-//         }
-
-//       }
-
+//     const user_id = req.params.user_id; // get user id from params
+//     if (!user_id) {
+//       return res.status(400).json({ status: 400, message: "User ID is required" });
 //     }
 
-//     const { bike_id } = req.body;
-//     const bikeRes = await bikeModel.findOne({ id: bike_id });
-//     if (bikeRes) {
-//       bikeModel.findOneAndDelete({ id: bike_id }, async function (err, docs) {
-//         if (err) {
-//           var response = {
-//             status: 201,
-//             message: "Vehicle delete failed",
-//           };
-//           return res.status(201).send(response);
-//         } else {
-//           var response = {
-//             status: 200,
-//             message: "vehicle deleted successfully",
-//           };
-//           return res.status(200).send(response);
-//         }
-//       });
-//     } else {
-//       var response = {
-//         status: 201,
-//         message: "vehicle not Found",
-//       };
-//       return res.status(201).send(response);
-//     }
-//   } catch (error) {
-//     console.log("error", error);
-//     response = {
-//       status: 201,
-//       message: "Operation was not successful",
-//     };
-//     return res.status(201).send(response);
+//     // Check if user is sub-admin
+//    const adminUser = await Admin.findById(user_id);
+
+// if (!adminUser) {
+//   return res.status(404).json({ status: 404, message: "User not found" });
+// }
+
+// // ✅ SUPER ADMIN: allow directly
+// if (adminUser.role === "Admin") {
+//   // full access
+// }
+// // ✅ SUBADMIN: check permission
+// else if (adminUser.role === "SubAdmin") {
+//   const isAllowed = await checkPermission(user_id, "Bikes.delete");
+//   if (!isAllowed) {
+//     return res.status(403).json({
+//       status: 403,
+//       message: "You do not have permission to delete Bikes",
+//     });
 //   }
 // }
 
 
-async function deleteBike(req, res) {
-  try {
-    const user_id = req.params.user_id; // get user id from params
-    if (!user_id) {
-      return res.status(400).json({ status: 400, message: "User ID is required" });
-    }
+//     const { bike_id } = req.body;
+//     if (!bike_id) {
+//       return res.status(400).json({ status: 400, message: "Bike ID is required" });
+//     }
 
-    // Check if user is sub-admin
-    const subAdmin = await Admin.findById(user_id);
-    if (!subAdmin) {
-      return res.status(404).json({ status: 404, message: "Subadmin not found" });
-    }
+//     const bike = await BikeModel.findById(bike_id);
+//     if (!bike) {
+//       return res.status(404).json({ status: 404, message: "Bike not found" });
+//     }
 
-    // Check permission
-    const isAllowed = await checkPermission(user_id, "Bikes.delete");
-    if (!isAllowed) {
-      return res.status(403).json({ status: 403, message: "You do not have permission to delete Bikes" });
-    }
+//     await BikeModel.findByIdAndDelete(bike_id);
 
-    const { bike_id } = req.body;
-    if (!bike_id) {
-      return res.status(400).json({ status: 400, message: "Bike ID is required" });
-    }
-
-    const bike = await BikeModel.findById(bike_id);
-    if (!bike) {
-      return res.status(404).json({ status: 404, message: "Bike not found" });
-    }
-
-    await BikeModel.findByIdAndDelete(bike_id);
-
-    return res.status(200).json({ status: 200, message: "Bike deleted successfully" });
-  } catch (error) {
-    console.error("Error deleting bike:", error);
-    return res.status(500).json({ status: 500, message: "Operation was not successful" });
-  }
-}
+//     return res.status(200).json({ status: 200, message: "Bike deleted successfully" });
+//   } catch (error) {
+//     console.error("Error deleting bike:", error);
+//     return res.status(500).json({ status: 500, message: "Operation was not successful" });
+//   }
+// }
 
 
 
