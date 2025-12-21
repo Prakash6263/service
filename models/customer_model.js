@@ -1,80 +1,90 @@
-const mongoose = require("mongoose");
-const AutoIncrement = require('mongoose-sequence')(mongoose);
+const mongoose = require("mongoose")
+const AutoIncrement = require("mongoose-sequence")(mongoose)
 
-const CustomerSchema = new mongoose.Schema({
+const CustomerSchema = new mongoose.Schema(
+  {
     id: {
-        type: Number,
-        default: 0, 
+      type: Number,
+      default: 0,
     },
     first_name: {
-        type: String,
-        default: "",
+      type: String,
+      default: "",
     },
     last_name: {
-        type: String,
-        default: "",
+      type: String,
+      default: "",
     },
     pincode: {
-        type: String,
-        default: "",
+      type: String,
+      default: "",
     },
     email: {
-        type: String,
-        default: "",
+      type: String,
+      default: "",
     },
     password: {
-        type: String,
-        select: false,
+      type: String,
+      select: false,
     },
     phone: {
-        type: Number,
-        default: null, 
+      type: Number,
+      default: null,
     },
     state: {
-        type: String,
-        default: "",
+      type: String,
+      default: "",
     },
     city: {
-        type: String,
-        default: "",
+      type: String,
+      default: "",
     },
     address: {
-        type: String,
-        default: "",
+      type: String,
+      default: "",
     },
     image: {
-        type: String,
-        default: "",
+      type: String,
+      default: "",
     },
     ftoken: {
-        type: String,
-        default: "",
+      type: String,
+      default: "",
     },
     device_token: {
-        type: String,
-        default: "",
+      type: String,
+      default: "",
     },
-    userBike: [{ 
-        type: mongoose.Schema.Types.ObjectId, 
+    userBike: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
         ref: "UserBike",
-        default: [], 
-    }], 
+        default: [],
+      },
+    ],
     otp: {
-        type: Number,
-        default: null,
+      type: Number,
+      default: null,
     },
     isProfile: {
-        type: Boolean,
-        default: false,
+      type: Boolean,
+      default: false,
     },
     reward_points: { type: Number, default: 0 },
-},
+  },
 
-{
-    timestamps:true
-}
+  {
+    timestamps: true,
+  },
 )
 
+CustomerSchema.virtual("customerId").get(function () {
+  if (!this.id) return null
+  return `MRBDC${this.id.toString().padStart(4, "0")}`
+})
 
-CustomerSchema.plugin(AutoIncrement, {id:'user_seq',inc_field: 'id'});
-module.exports = mongoose.model("customers",CustomerSchema);
+CustomerSchema.set("toJSON", { virtuals: true })
+CustomerSchema.set("toObject", { virtuals: true })
+
+CustomerSchema.plugin(AutoIncrement, { id: "user_seq", inc_field: "id" })
+module.exports = mongoose.model("customers", CustomerSchema)
