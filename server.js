@@ -188,6 +188,8 @@ app.use(cookieParser());
 app.use(express.static("public"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/image", express.static("image"), serveIndex("image", { icons: true }));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/upload", express.static(path.join(__dirname, "upload")));
 
 /* ==============================
    Health / test
