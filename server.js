@@ -1,118 +1,265 @@
+// // const express = require("express");
+// // const crypto = require('crypto');
+// // const app = express();
+// // const path = require('path');
+// // const http = require('http');
+// // const bodyParser = require("body-parser");
+// // const multer = require('multer');
+// // const apiRouter = require("./routes/index");
+// // const db = require("./models/index");
+// // require("dotenv").config();
+// // const cookieParser = require("cookie-parser");
+// // const morgan = require("morgan");
+// // const cors = require("cors")
+// // const errorMiddleware = require("./middlewares/error");
+// // var serveIndex = require('serve-index')
+
+// // app.all("*", function (req, res, next) {
+// //   res.header("Access-Control-Allow-Origin", "*");
+// //   res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
+// //   res.header("Access-Control-Allow-Headers", "Content-Type", 'Authorization');
+// //   next();
+// // });
+
+// // var server = http.createServer(app);
+
+// // app.use(cors())
+// // app.use(morgan("dev"));
+// // app.use(bodyParser.urlencoded({ extended: true }));
+// // app.use(bodyParser.json());
+// // app.use(cookieParser());
+// // app.use(express.static('public'));
+
+// // app.use(express.static(path.join(__dirname, 'public')));
+// // app.use('/image', express.static('image'), serveIndex('image', { 'icons': true }));
+
+// // app.use(bodyParser.urlencoded({ extended: true }));
+
+// // app.get('/', (req, res) => {
+// //   res.send('API is running...');
+// // });
+
+
+// // app.get("/bikedoctor", (req, res) => {
+// //   res.status(200).json({ message: "Bikedoctor API Working" })
+// // });
+
+
+// // app.post('/upload', (req, res) => {
+
+// //   const { image } = req.files;
+
+// //   if (!image) return res.sendStatus(400);
+
+// //   if (!/^image/.test(image.mimetype)) return res.sendStatus(400);
+
+// //   image.mv(__dirname + '/upload/' + Date.now() + "_" + image.name.replace(" ", ""));
+
+// //   res.sendStatus(200);
+
+// // });
+
+// // app.use("/bikedoctor", apiRouter);
+// // // --------------------------------------
+// // app.use("/location", require("./routes/stateAndCityRoute"));
+// // // app.use("/dealer", require("./routes/dealerRoutes"));
+// // app.use("/service", require("./routes/serviceRoutes"));
+
+// // app.use("/bikedoctor", require('./routes/policyRoutes'))
+// // app.use("/testmulter", require("./routes/multerRoute"));
+
+
+
+// // // ---------------------------------------------
+
+// // // const DB_URL = "mongodb+srv://test:test@cluster0.mzwadhx.mongodb.net/?retryWrites=true&w=majority";
+
+
+// // // const DB = "mongodb://0.0.0.0:27017/mechanictesting";
+// // //const DB = process.env.DATABASE_URL || "mongodb://0.0.0.0:27017/BikeDoctor";
+// // const DB = process.env.DATABASE_URL;
+
+// // db.mongoose
+// //   .connect(DB, {
+// //     useUnifiedTopology: true,
+// //     useNewUrlParser: true,
+// //   })
+// //   .then((data) => {
+// //     console.log(`Mongodb connected with : ${data.connection.host} server`);
+// //   })
+// //   .catch((err) => {
+// //     console.log("mongodb error", err);
+// //   });
+
+// // // test
+
+// // const port = process.env.PORT || 8001;
+// // server.listen(8001, () => {
+// //   // server.listen(()=>{
+// //   console.log(`Server is working on port : ${port}`)
+// //   // console.log(`Bike Dcotor API Server is working`)
+// // })
+
+
+// // function errHandler(err, req, res, next) {
+// //   if (err instanceof multer.MulterError) {
+// //     res.json({
+// //       success: 0,
+// //       message: err.message
+// //     })
+// //   }
+// // }
+
+
+// // app.use(errHandler);
+// // app.use(errorMiddleware);
+
+
 // const express = require("express");
-// const crypto = require('crypto');
-// const app = express();
-// const path = require('path');
-// const http = require('http');
+// const crypto = require("crypto");
+// const path = require("path");
+// const http = require("http");
 // const bodyParser = require("body-parser");
-// const multer = require('multer');
-// const apiRouter = require("./routes/index");
-// const db = require("./models/index");
-// require("dotenv").config();
+// const multer = require("multer");
 // const cookieParser = require("cookie-parser");
 // const morgan = require("morgan");
-// const cors = require("cors")
+// const cors = require("cors");
+// const serveIndex = require("serve-index");
+// const { Server } = require("socket.io");
+// require("dotenv").config();
+
+// const apiRouter = require("./routes/index");
+// const db = require("./models/index");
 // const errorMiddleware = require("./middlewares/error");
-// var serveIndex = require('serve-index')
 
-// app.all("*", function (req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
-//   res.header("Access-Control-Allow-Headers", "Content-Type", 'Authorization');
-//   next();
+// const app = express();
+// const server = http.createServer(app);
+
+// /* ==============================
+//    CORS (HTTP + WebSocket)
+//    ============================== */
+// const ALLOWED_ORIGINS = [
+//   "http://localhost:3000",
+//   "http://localhost:5173",
+//   "https://dr-bike-frontend.vercel.app/",
+//   "https://admin.mrbikedoctor.cloud",
+// ];
+
+// app.use(cors({
+//   origin: (origin, cb) => cb(null, true), // or restrict using ALLOWED_ORIGINS.includes(origin)
+//   methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"],
+//   credentials: true,
+// }));
+// app.options("*", cors()); // preflight
+
+// // Socket.IO with CORS
+// const io = new Server(server, {
+//   cors: {
+//     origin: (origin, cb) => cb(null, true), // or ALLOWED_ORIGINS
+//     methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"],
+//     credentials: true,
+//   }
 // });
 
-// var server = http.createServer(app);
+// // make io available in routes/controllers: req.app.get("io")//
+// app.set("io", io);
 
-// app.use(cors())
+// /* ==============================
+//    Socket rooms per ticket
+//    ============================== */
+// io.on("connection", (socket) => {
+//   // client should call: socket.emit("ticket:join", { ticketId })
+//   socket.on("ticket:join", ({ ticketId }) => {
+//     if (ticketId) socket.join(String(ticketId));
+//   });
+//   socket.on("ticket:leave", ({ ticketId }) => {
+//     if (ticketId) socket.leave(String(ticketId));
+//   });
+// });
+
+// /* ==============================
+//    Middleware
+//    ============================== */
 // app.use(morgan("dev"));
-// app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(bodyParser.json());
-// app.use(cookieParser());
-// app.use(express.static('public'));
-
-// app.use(express.static(path.join(__dirname, 'public')));
-// app.use('/image', express.static('image'), serveIndex('image', { 'icons': true }));
-
 // app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(cookieParser());
 
-// app.get('/', (req, res) => {
-//   res.send('API is running...');
-// });
+// app.use(express.static("public"));
+// app.use(express.static(path.join(__dirname, "public")));
+// app.use("/image", express.static("image"), serveIndex("image", { icons: true }));
+// app.use(
+//   "/uploads",
+//   express.static("/var/www/service/uploads", {
+//     fallthrough: false
+//   })
+// );
+// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+// app.use("/upload", express.static(path.join(__dirname, "upload")));
 
-
-// app.get("/bikedoctor", (req, res) => {
+// /* ==============================
+//    Health / test
+//    ============================== */
+// app.get("/", (req, res) => res.send("API is running..."));
+// app.get("/bikedoctor", (req, res) =>
 //   res.status(200).json({ message: "Bikedoctor API Working" })
-// });
+// );
 
-
-// app.post('/upload', (req, res) => {
-
-//   const { image } = req.files;
-
+// /* ==============================
+//    Upload (basic)
+//    ============================== */
+// app.post("/upload", (req, res) => {
+//   const { image } = req.files || {};
 //   if (!image) return res.sendStatus(400);
-
 //   if (!/^image/.test(image.mimetype)) return res.sendStatus(400);
 
-//   image.mv(__dirname + '/upload/' + Date.now() + "_" + image.name.replace(" ", ""));
-
-//   res.sendStatus(200);
-
+//   image.mv(
+//     path.join(__dirname, "upload", `${Date.now()}_${image.name.replace(/\s+/g, "")}`),
+//     (err) => {
+//       if (err) return res.status(500).json({ message: "Upload failed" });
+//       res.sendStatus(200);
+//     }
+//   );
 // });
 
+// /* ==============================
+//    Routes
+//    ============================== */
 // app.use("/bikedoctor", apiRouter);
-// // --------------------------------------
 // app.use("/location", require("./routes/stateAndCityRoute"));
-// // app.use("/dealer", require("./routes/dealerRoutes"));
 // app.use("/service", require("./routes/serviceRoutes"));
-
-// app.use("/bikedoctor", require('./routes/policyRoutes'))
+// app.use("/bikedoctor", require("./routes/policyRoutes"));
 // app.use("/testmulter", require("./routes/multerRoute"));
 
-
-
-// // ---------------------------------------------
-
-// // const DB_URL = "mongodb+srv://test:test@cluster0.mzwadhx.mongodb.net/?retryWrites=true&w=majority";
-
-
-// // const DB = "mongodb://0.0.0.0:27017/mechanictesting";
-// //const DB = process.env.DATABASE_URL || "mongodb://0.0.0.0:27017/BikeDoctor";
+// /* ==============================
+//    DB
+//    ============================== */
 // const DB = process.env.DATABASE_URL;
-
 // db.mongoose
-//   .connect(DB, {
-//     useUnifiedTopology: true,
-//     useNewUrlParser: true,
-//   })
-//   .then((data) => {
-//     console.log(`Mongodb connected with : ${data.connection.host} server`);
-//   })
-//   .catch((err) => {
-//     console.log("mongodb error", err);
-//   });
+//   .connect(DB, { useUnifiedTopology: true, useNewUrlParser: true })
+//   .then((data) => console.log(`Mongodb connected with: ${data.connection.host}`))
+//   .catch((err) => console.log("mongodb error", err));
 
-// // test
-
-// const port = process.env.PORT || 8001;
-// server.listen(8001, () => {
-//   // server.listen(()=>{
-//   console.log(`Server is working on port : ${port}`)
-//   // console.log(`Bike Dcotor API Server is working`)
-// })
-
-
+// /* ==============================
+//    Errors
+//    ============================== */
 // function errHandler(err, req, res, next) {
 //   if (err instanceof multer.MulterError) {
-//     res.json({
-//       success: 0,
-//       message: err.message
-//     })
+//     return res.json({ success: 0, message: err.message });
 //   }
+//   next(err);
 // }
-
-
 // app.use(errHandler);
 // app.use(errorMiddleware);
+
+// //
+// /* ==============================
+//    Start
+//    ============================== */
+// const PORT = process.env.PORT || 8001;
+// server.listen(PORT, () => console.log(`Server is working on port: ${PORT}`));
+
+
 
 
 const express = require("express");
@@ -136,39 +283,29 @@ const app = express();
 const server = http.createServer(app);
 
 /* ==============================
-   CORS (HTTP + WebSocket)
+   CORS
    ============================== */
-const ALLOWED_ORIGINS = [
-  "http://localhost:3000",
-  "http://localhost:5173",
-  "https://dr-bike-frontend.vercel.app/",
-  "https://admin.mrbikedoctor.cloud",
-];
-
-app.use(cors({
-  origin: (origin, cb) => cb(null, true), // or restrict using ALLOWED_ORIGINS.includes(origin)
-  methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"],
-  credentials: true,
-}));
-app.options("*", cors()); // preflight
-
-// Socket.IO with CORS
-const io = new Server(server, {
-  cors: {
-    origin: (origin, cb) => cb(null, true), // or ALLOWED_ORIGINS
-    methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"],
+app.use(
+  cors({
+    origin: (origin, cb) => cb(null, true),
     credentials: true,
-  }
-});
-
-// make io available in routes/controllers: req.app.get("io")//
-app.set("io", io);
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  })
+);
+app.options("*", cors());
 
 /* ==============================
-   Socket rooms per ticket
+   Socket.IO
    ============================== */
+const io = new Server(server, {
+  cors: {
+    origin: (origin, cb) => cb(null, true),
+    credentials: true,
+  },
+});
+app.set("io", io);
+
 io.on("connection", (socket) => {
-  // client should call: socket.emit("ticket:join", { ticketId })
   socket.on("ticket:join", ({ ticketId }) => {
     if (ticketId) socket.join(String(ticketId));
   });
@@ -178,49 +315,39 @@ io.on("connection", (socket) => {
 });
 
 /* ==============================
-   Middleware
+   Middlewares
    ============================== */
 app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use(express.static("public"));
-app.use(express.static(path.join(__dirname, "public")));
-app.use("/image", express.static("image"), serveIndex("image", { icons: true }));
+/* ==============================
+   🔥 STATIC FILES (IMPORTANT PART)
+   ============================== */
+
+// dynamic absolute path (works local + live)
+const UPLOADS_PATH = path.join(process.cwd(), "uploads");
+
+// MUST be before routes
 app.use(
   "/uploads",
-  express.static("/var/www/service/uploads", {
-    fallthrough: false
+  express.static(UPLOADS_PATH, {
+    fallthrough: false,
   })
 );
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-app.use("/upload", express.static(path.join(__dirname, "upload")));
+
+// optional public folder
+app.use(express.static(path.join(process.cwd(), "public")));
 
 /* ==============================
-   Health / test
+   Health Check
    ============================== */
 app.get("/", (req, res) => res.send("API is running..."));
+
 app.get("/bikedoctor", (req, res) =>
   res.status(200).json({ message: "Bikedoctor API Working" })
 );
-
-/* ==============================
-   Upload (basic)
-   ============================== */
-app.post("/upload", (req, res) => {
-  const { image } = req.files || {};
-  if (!image) return res.sendStatus(400);
-  if (!/^image/.test(image.mimetype)) return res.sendStatus(400);
-
-  image.mv(
-    path.join(__dirname, "upload", `${Date.now()}_${image.name.replace(/\s+/g, "")}`),
-    (err) => {
-      if (err) return res.status(500).json({ message: "Upload failed" });
-      res.sendStatus(200);
-    }
-  );
-});
 
 /* ==============================
    Routes
@@ -232,29 +359,36 @@ app.use("/bikedoctor", require("./routes/policyRoutes"));
 app.use("/testmulter", require("./routes/multerRoute"));
 
 /* ==============================
-   DB
+   Database
    ============================== */
 const DB = process.env.DATABASE_URL;
+
 db.mongoose
-  .connect(DB, { useUnifiedTopology: true, useNewUrlParser: true })
-  .then((data) => console.log(`Mongodb connected with: ${data.connection.host}`))
-  .catch((err) => console.log("mongodb error", err));
+  .connect(DB, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+  })
+  .then((data) =>
+    console.log("Mongodb connected with:", data.connection.host)
+  )
+  .catch((err) => console.log("MongoDB error:", err));
 
 /* ==============================
    Errors
    ============================== */
 function errHandler(err, req, res, next) {
   if (err instanceof multer.MulterError) {
-    return res.json({ success: 0, message: err.message });
+    return res.status(400).json({ success: false, message: err.message });
   }
   next(err);
 }
 app.use(errHandler);
 app.use(errorMiddleware);
 
-//
 /* ==============================
-   Start
+   Start Server
    ============================== */
 const PORT = process.env.PORT || 8001;
-server.listen(PORT, () => console.log(`Server is working on port: ${PORT}`));
+server.listen(PORT, () =>
+  console.log(`Server is working on port: ${PORT}`)
+);
