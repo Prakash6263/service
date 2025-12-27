@@ -118,48 +118,209 @@ async function getServicesByDealer(req, res) {
 
 async function addAdminService(req, res) {
   try {
+    // Auth check
+    if (!req.headers.token) {
+      return res.status(401).json({
+        status: false,
+        message: "Token required"
+      });
+    }
+
     const data = jwt_decode(req.headers.token);
-    const user_id = data.user_id;
+    const user_id = data.user_id || data.id;
+
     if (!user_id) {
-      return res.status(401).send({ status: false, message: "Unauthorized!" });
+      return res.status(401).json({
+        status: false,
+        message: "Unauthorized"
+      });
     }
 
-    const { name, description } = req.body;
-    if (!req.file || !name) {
-      return res.status(400).send({ status: false, message: "Name and image are required!" });
+    const { name, companies, bikes } = req.body;
+
+    /* =========================
+       1. Validate name
+    ========================== */
+    if (!name || name.trim() === "") {
+      return res.status(400).json({
+        status: false,
+        message: "Service name is required",
+        field: "name"
+      });
     }
 
+    /* =========================
+       2. Validate companies
+    ========================== */
+    let parsedCompanies = [];
+    try {
+      parsedCompanies =
+        typeof companies === "string" ? JSON.parse(companies) : companies;
+    } catch {
+      return res.status(400).json({
+        status: false,
+        message: "Invalid companies format",
+        field: "companies"
+      });
+    }
+
+    if (!Array.isArray(parsedCompanies) || parsedCompanies.length === 0) {
+      return res.status(400).json({
+        status: false,
+        message: "At least one company is required",
+        field: "companies"
+      });
+    }
+
+    for (let i = 0; i < parsedCompanies.length; i++) {
+      if (!mongoose.Types.ObjectId.isValid(parsedCompanies[i])) {
+        return res.status(400).json({
+          status: false,
+          message: `Invalid companyId at index ${i}`,
+          field: `companies[${i}]`
+        });
+      }
+    }
+
+    /* =========================
+       3. Validate CC-wise pricing
+    ========================== */
+    let parsedBikes = [];
+    try {
+      parsedBikes =
+        typeof bikes === "string" ? JSON.parse(bikes) : bikes;
+    } catch {
+      return res.status(400).json({
+        status: false,
+        message: "Invalid bikes format",
+        field: "bikes"
+      });
+    }
+
+    if (!Array.isArray(parsedBikes) || parsedBikes.length === 0) {
+      return res.status(400).json({
+        status: false,
+        message: "At least one CC price is required",
+        field: "bikes"
+      });
+    }
+
+    for (let i = 0; i < parsedBikes.length; i++) {
+      const { cc, price } = parsedBikes[i];
+
+      if (!cc || isNaN(cc) || cc <= 0) {
+        return res.status(400).json({
+          status: false,
+          message: `Invalid CC at index ${i}`,
+          field: `bikes[${i}].cc`
+        });
+      }
+
+      if (!price || isNaN(price) || price <= 0) {
+        return res.status(400).json({
+          status: false,
+          message: `Invalid price at index ${i}`,
+          field: `bikes[${i}].price`
+        });
+      }
+    }
+
+    /* =========================
+       4. Validate image
+    ========================== */
+    if (!req.file) {
+      return res.status(400).json({
+        status: false,
+        message: "Service image is required",
+        field: "image"
+      });
+    }
+
+    /* =========================
+       5. Create admin service
+    ========================== */
     const newService = await adminservices.create({
-      name,
-      image: req.file.filename,
-      description,
+      name: name.trim(),
+      companies: parsedCompanies,
+      bikes: parsedBikes,
+      image: req.file.filename
     });
 
-    return res.status(200).send({
+    return res.status(201).json({
       status: true,
       message: "Admin service created successfully",
-      data: newService,
+      data: newService
     });
+
   } catch (error) {
     console.error("Error adding admin service:", error);
-    return res.status(500).send({ status: false, message: "Internal Server Error" });
+    return res.status(500).json({
+      status: false,
+      message: "Internal Server Error"
+    });
   }
 }
+
 
 async function listAdminServices(req, res) {
   try {
-    const services = await adminservices.find().sort({ id: -1 });
+    const services = await adminservices
+      .find()
+      .populate("companies", "name")
+      .sort({ id: -1 });
 
-    return res.status(200).send({
+    return res.status(200).json({
       status: true,
-      message: services.length ? "Success" : "No services found",
-      data: services,
+      message: services.length ? "Admin services fetched successfully" : "No admin services found",
+      data: services
     });
   } catch (error) {
     console.error("Error fetching admin services:", error);
-    return res.status(500).send({ status: false, message: "Internal Server Error" });
+    return res.status(500).json({
+      status: false,
+      message: "Internal Server Error"
+    });
   }
 }
+
+
+async function getAdminServiceById(req, res) {
+  try {
+    const { id } = req.params;
+
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        status: false,
+        message: "Valid admin service ID is required"
+      });
+    }
+
+    const service = await adminservices
+      .findById(id)
+      .populate("companies", "name")
+      .lean();
+
+    if (!service) {
+      return res.status(404).json({
+        status: false,
+        message: "Admin service not found"
+      });
+    }
+
+    return res.status(200).json({
+      status: true,
+      message: "Admin service fetched successfully",
+      data: service
+    });
+  } catch (error) {
+    console.error("Error fetching admin service:", error);
+    return res.status(500).json({
+      status: false,
+      message: "Internal Server Error"
+    });
+  }
+}
+
 
 // By Prashant 
 // add service
@@ -792,6 +953,185 @@ async function updateAdditionalServiceById(req, res) {
   }
 }
 
+async function updateAdminService(req, res) {
+  try {
+    const { id } = req.params;
+    const { name, companies, bikes } = req.body;
+
+    // Validate ID
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        status: false,
+        message: "Valid admin service ID is required"
+      });
+    }
+
+    const updateData = {};
+
+    /* =========================
+       1. Name (optional)
+    ========================== */
+    if (name && name.trim() !== "") {
+      updateData.name = name.trim();
+    }
+
+    /* =========================
+       2. Companies (optional)
+    ========================== */
+    if (companies) {
+      let parsedCompanies;
+      try {
+        parsedCompanies =
+          typeof companies === "string" ? JSON.parse(companies) : companies;
+      } catch {
+        return res.status(400).json({
+          status: false,
+          message: "Invalid companies format",
+          field: "companies"
+        });
+      }
+
+      if (!Array.isArray(parsedCompanies) || parsedCompanies.length === 0) {
+        return res.status(400).json({
+          status: false,
+          message: "At least one company is required",
+          field: "companies"
+        });
+      }
+
+      for (let i = 0; i < parsedCompanies.length; i++) {
+        if (!mongoose.Types.ObjectId.isValid(parsedCompanies[i])) {
+          return res.status(400).json({
+            status: false,
+            message: `Invalid companyId at index ${i}`,
+            field: `companies[${i}]`
+          });
+        }
+      }
+
+      updateData.companies = parsedCompanies;
+    }
+
+    /* =========================
+       3. Bikes (optional)
+    ========================== */
+    if (bikes) {
+      let parsedBikes;
+      try {
+        parsedBikes =
+          typeof bikes === "string" ? JSON.parse(bikes) : bikes;
+      } catch {
+        return res.status(400).json({
+          status: false,
+          message: "Invalid bikes format",
+          field: "bikes"
+        });
+      }
+
+      if (!Array.isArray(parsedBikes) || parsedBikes.length === 0) {
+        return res.status(400).json({
+          status: false,
+          message: "At least one CC price is required",
+          field: "bikes"
+        });
+      }
+
+      for (let i = 0; i < parsedBikes.length; i++) {
+        const { cc, price } = parsedBikes[i];
+
+        if (!cc || isNaN(cc) || cc <= 0) {
+          return res.status(400).json({
+            status: false,
+            message: `Invalid CC at index ${i}`,
+            field: `bikes[${i}].cc`
+          });
+        }
+
+        if (!price || isNaN(price) || price <= 0) {
+          return res.status(400).json({
+            status: false,
+            message: `Invalid price at index ${i}`,
+            field: `bikes[${i}].price`
+          });
+        }
+      }
+
+      updateData.bikes = parsedBikes;
+    }
+
+    /* =========================
+       4. Image (optional)
+    ========================== */
+    if (req.file) {
+      updateData.image = req.file.filename;
+    }
+
+    /* =========================
+       5. Update DB
+    ========================== */
+    const updatedService = await adminservices.findByIdAndUpdate(
+      id,
+      updateData,
+      { new: true }
+    ).populate("companies", "name");
+
+    if (!updatedService) {
+      return res.status(404).json({
+        status: false,
+        message: "Admin service not found"
+      });
+    }
+
+    return res.status(200).json({
+      status: true,
+      message: "Admin service updated successfully",
+      data: updatedService
+    });
+
+  } catch (error) {
+    console.error("Error updating admin service:", error);
+    return res.status(500).json({
+      status: false,
+      message: "Internal Server Error"
+    });
+  }
+}
+
+
+async function deleteAdminService(req, res) {
+  try {
+    const { id } = req.params;
+
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        status: false,
+        message: "Valid admin service ID is required"
+      });
+    }
+
+    const deletedService = await adminservices.findByIdAndDelete(id);
+
+    if (!deletedService) {
+      return res.status(404).json({
+        status: false,
+        message: "Admin service not found"
+      });
+    }
+
+    return res.status(200).json({
+      status: true,
+      message: "Admin service deleted successfully"
+    });
+
+  } catch (error) {
+    console.error("Error deleting admin service:", error);
+    return res.status(500).json({
+      status: false,
+      message: "Internal Server Error"
+    });
+  }
+}
+
 module.exports = {
   addservice,
   servicelist,
@@ -807,5 +1147,8 @@ module.exports = {
   additionalservicelist,
   deleteAdditionaalService,
   getAdditionalServiceById,
-  updateAdditionalServiceById
+  updateAdditionalServiceById,
+  getAdminServiceById,
+  updateAdminService,
+  deleteAdminService
 };

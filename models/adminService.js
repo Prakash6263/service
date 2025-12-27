@@ -1,20 +1,56 @@
 const mongoose = require("mongoose");
 const AutoIncrement = require("mongoose-sequence")(mongoose);
 
-const serviceSchema = new mongoose.Schema(
+const adminServiceSchema = new mongoose.Schema(
   {
     id: {
-      type: Number,
+      type: Number
     },
-    name: String,
-    image: String,
-    description: String,
+
+    // Service Name
+    name: {
+      type: String,
+      required: true,
+      trim: true
+    },
+
+    // Select company
+    companies: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "BikeCompany",
+        required: true
+      }
+    ],
+
+    // CC-wise base pricing
+    bikes: [
+      {
+        cc: {
+          type: Number,
+          required: true
+        },
+        price: {
+          type: Number,
+          required: true
+        }
+      }
+    ],
+
+    // Service image
+    image: {
+      type: String,
+      required: true
+    }
   },
   {
-    timestamps: true,
+    timestamps: true
   }
 );
 
-serviceSchema.plugin(AutoIncrement, { id: "adminservices_seq", inc_field: "id" });
+adminServiceSchema.plugin(AutoIncrement, {
+  id: "admin_service_seq",
+  inc_field: "id"
+});
 
-module.exports = mongoose.model("adminservices", serviceSchema);
+module.exports = mongoose.model("AdminService", adminServiceSchema);

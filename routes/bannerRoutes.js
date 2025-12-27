@@ -12,7 +12,7 @@ var {
 const router = express.Router();
 
 // Define the folder path
-const uploadDir = path.join(__dirname, "../image");
+const uploadDir = path.join(process.cwd(), "uploads/banners");
 
 // Ensure the folder exists
 if (!fs.existsSync(uploadDir)) {
@@ -26,10 +26,13 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, callback) {
     const ext = path.extname(file.originalname);
-    const uniqueName = `${file.fieldname}-${Date.now()}${ext}`;
+    const uniqueName = `image-${Date.now()}${ext}`;
     callback(null, uniqueName);
   },
 });
+
+
+
 
 // Configure Multer with size limit (20MB)
 const upload = multer({

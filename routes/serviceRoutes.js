@@ -18,7 +18,10 @@ var {
   additionalservicelist,
   deleteAdditionaalService,
   getAdditionalServiceById,
-  updateAdditionalServiceById
+  updateAdditionalServiceById,
+  getAdminServiceById,
+  updateAdminService,
+  deleteAdminService
 } = require("../controller/service");
 
 var { PicknDrop } = require("../controller/pickupndrop");
@@ -26,7 +29,8 @@ var { PicknDrop } = require("../controller/pickupndrop");
 const router = express.Router();
 
 // Define the folder path
-const uploadDir = path.join(__dirname, "../image");
+const uploadDir = path.join(__dirname, "../uploads/admin-services");
+
 
 // Ensure the folder exists
 if (!fs.existsSync(uploadDir)) {
@@ -73,6 +77,18 @@ router.post("/PicknDrop", PicknDrop);
 router.get("/dealer/:dealer_id", getServicesByDealer);
 router.post("/adminservices/create", upload.single("image"), addAdminService);
 router.get("/adminservices", listAdminServices);
+router.get("/admin/services/:id", getAdminServiceById);
+router.put(
+  "/admin/services/:id",
+  upload.single("image"),
+  updateAdminService
+);
+
+router.delete(
+  "/admin/services/:id",
+  deleteAdminService
+);
+
 
 // Aadditional Services 
 router.post("/create-additional-service", upload.single("images"), addAdditionalService);
