@@ -786,7 +786,7 @@ const verifyOtp = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user._id, role: user.role },
+      { id: user._id, role: user.role,user_type:1 },
       process.env.JWT_SECRET || "your_super_secret_key_here",
       { expiresIn: "1d" }
     );
