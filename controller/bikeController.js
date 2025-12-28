@@ -699,11 +699,11 @@ async function deleteBike(req, res) {
       return res.status(401).send({ status: 401, message: "Token not provided" })
     }
     const data = jwt_decode(req.headers.token)
-    const user_id = data.user_id || data.id
-    const user_type = data.user_type
+    const user_id = data.id
+    // const user_type = data.user_type
     const role = data.role
 
-    if (user_id == null || (user_type != 1 && role !== "Admin")) {
+    if (!user_id || role !== "Admin") {
       return res.status(401).send({
         status: 401,
         message: "Only Admin can delete bikes!",
