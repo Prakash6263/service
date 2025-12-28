@@ -696,104 +696,117 @@ async function bikeList(req, res) {
 async function deleteBike(req, res) {
   try {
     if (!req.headers.token) {
-      return res.status(401).send({ status: 401, message: "Token not provided" })
-    }
-    const data = jwt_decode(req.headers.token)
-    // Normalizing user_id and authorization check for both local and live tokens
-    const user_id = data.user_id || data.id
-    const user_type = data.user_type
-    const role = data.role
-
-    // Allows deletion if user_type is 1 (local admin) OR role is "Admin" (live admin)
-    if (user_id == null || (user_type != 1 && role !== "Admin")) {
-      return res.status(401).send({
+      return res.status(401).json({
         status: 401,
-        message: "Only Admin can delete bikes!",
-      })
+        message: "Token not provided",
+      });
     }
 
-    const bike_id = req.params.id
+    const data = jwt_decode(req.headers.token);
 
-    const bikeRes = await BikeVariant.findByIdAndDelete(bike_id)
+    const userId = data.id;     // ✅ correct
+    const role = data.role;     // ✅ correct
 
-    if (bikeRes) {
-      return res.status(200).send({
+    // 🔒 Admin-only access
+    if (!userId || role !== "Admin") {
+      return res.status(403).json({
+        status: 403,
+        message: "Only Admin can delete bikes",
+      });
+    }
+
+    const bikeId = req.params.id;
+
+    // Try deleting variant first
+    const variantDeleted = await BikeVariant.findByIdAndDelete(bikeId);
+    if (variantDeleted) {
+      return res.status(200).json({
         status: 200,
-        message: "vehicle deleted successfully",
-      })
-    } else {
-      const modelRes = await BikeModel.findByIdAndDelete(bike_id)
-      if (modelRes) {
-        return res.status(200).send({
-          status: 200,
-          message: "vehicle model deleted successfully",
-        })
-      }
-      return res.status(404).send({
-        status: 404,
-        message: "vehicle not found",
-      })
+        message: "Bike variant deleted successfully",
+      });
     }
+
+    // Try deleting model
+    const modelDeleted = await BikeModel.findByIdAndDelete(bikeId);
+    if (modelDeleted) {
+      return res.status(200).json({
+        status: 200,
+        message: "Bike model deleted successfully",
+      });
+    }
+
+    return res.status(404).json({
+      status: 404,
+      message: "Bike not found",
+    });
+
   } catch (error) {
-    console.log("[v0] error in deleteBike:", error)
-    return res.status(500).send({
+    console.error("deleteBike error:", error);
+    return res.status(500).json({
       status: 500,
-      message: "Internal server error during deletion",
-    })
+      message: "Internal server error",
+    });
   }
 }
 
 async function editBike(req, res) {
   try {
     if (!req.headers.token) {
-      return res.status(401).send({ status: 401, message: "Token not provided" })
+      return res.status(401).json({ message: "Token not provided" });
     }
-    const data = jwt_decode(req.headers.token)
-    const user_id = data.user_id || data.id
-    const user_type = data.user_type
-    const role = data.role
 
-    if (user_id == null || (user_type != 1 && role !== "Admin")) {
-      return res.status(401).send({
-        status: 401,
-        message: "Only Admin can edit bikes!",
-      })
+    const data = jwt_decode(req.headers.token);
+    const role = data.role;
+
+    if (role !== "Admin") {
+      return res.status(403).json({
+        message: "Only Admin can edit bikes",
+      });
     }
-    const { name, model_name, engine_cc, extra_charges, variant_name } = req.body
-    const bike_id = req.params.id
 
-    const updateData = { variant_name: name || variant_name, engine_cc: engine_cc, extra_charges }
-    const bikeResult = await BikeVariant.findByIdAndUpdate(bike_id, { $set: updateData }, { new: true })
+    const { name, model_name, engine_cc, extra_charges, variant_name } = req.body;
+    const bikeId = req.params.id;
 
-    if (bikeResult) {
-      return res.status(200).send({
-        status: 200,
-        message: "Vehicle updated successfully",
-        data: bikeResult,
-      })
-    } else {
-      const modelUpdate = { model_name: model_name || name }
-      const modelResult = await BikeModel.findByIdAndUpdate(bike_id, { $set: modelUpdate }, { new: true })
-      if (modelResult) {
-        return res.status(200).send({
-          status: 200,
-          message: "Vehicle model updated successfully",
-          data: modelResult,
-        })
-      }
-      return res.status(404).send({
-        status: 404,
-        message: "Vehicle not found",
-      })
+    const updateData = {
+      variant_name: name || variant_name,
+      engine_cc,
+      extra_charges,
+    };
+
+    const variantUpdated = await BikeVariant.findByIdAndUpdate(
+      bikeId,
+      { $set: updateData },
+      { new: true }
+    );
+
+    if (variantUpdated) {
+      return res.status(200).json({
+        message: "Bike variant updated successfully",
+        data: variantUpdated,
+      });
     }
+
+    const modelUpdated = await BikeModel.findByIdAndUpdate(
+      bikeId,
+      { $set: { model_name: model_name || name } },
+      { new: true }
+    );
+
+    if (modelUpdated) {
+      return res.status(200).json({
+        message: "Bike model updated successfully",
+        data: modelUpdated,
+      });
+    }
+
+    return res.status(404).json({ message: "Bike not found" });
+
   } catch (error) {
-    console.log("[v0] error in editBike:", error)
-    return res.status(500).send({
-      status: 500,
-      message: "Operation was not successful",
-    })
+    console.error("editBike error:", error);
+    return res.status(500).json({ message: "Server error" });
   }
 }
+
 
 async function getBike(req, res) {
   try {

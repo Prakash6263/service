@@ -722,72 +722,112 @@ async function subadminsignup(req, res) {
 // };
 
 const sendOtp = async (req, res) => {
-  let { phone } = req.body;
-  console.log("Received phone:", phone);
-  phone = String(phone).trim();
-
-  if (!/^\d{10}$/.test(phone)) {
-    return res.status(400).json({ message: "Invalid phone number. Expected 10 digits." });
-  }
-
-  const fullPhone = `+91${phone}`;
-
-  console.log("mobile",phone)
   try {
-    const user = await admin.findOne({ mobile: phone });
-    if (!user) {
-      return res.status(403).json({ message: "Access denied. Not an admin user." });
+    let { phone } = req.body;
+    phone = String(phone).trim();
+
+    if (!/^\d{10}$/.test(phone)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid phone number"
+      });
     }
 
-    const otp = "999999";
+    const user = await admin.findOne({ mobile: phone });
 
-    otpStore.set(phone, otp);
-    setTimeout(() => otpStore.delete(phone), 5 * 60 * 1000);
-
-    // Optional: Still send SMS, or skip in dev
-    // await client.messages.create({
-    //   body: `Your OTP is ${otp}`,
-    //   from: process.env.TWILIO_PHONE_NUMBER,
-    //   to: fullPhone
-    // });
-
-    return res.status(200).json({ status: true, message: "OTP sent successfully" });
-  } catch (error) {
-    console.error("Twilio error:", error.message);
-    return res.status(500).json({ status: false, message: "Failed to send OTP" });
-  }
-};
-
-const verifyOtp = async (req, res) => {
-  const phone = String(req.body.phone).trim();
-  const otp = String(req.body.otp).trim();
-
-  console.log("Received phone:", phone);
-  console.log("Received otp:", otp);
-  console.log("Stored otp:", otpStore.get(phone));
-
-  if (!phone || !otp) {
-    return res.status(400).json({ message: "Phone and OTP are required" });
-  }
-
-  const storedOtp = otpStore.get(phone);
-  if (!storedOtp || storedOtp !== otp) {
-    return res.status(401).json({ message: "Invalid or expired OTP" });
-  }
-
-  try {
-    const user = await admin.findOne({ mobile: phone }).lean(); // lean() returns plain object
     if (!user) {
-      return res.status(404).json({ message: "User not found with this number" });
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    // 🔒 Admin only
+    if (user.role !== "Admin") {
+      return res.status(403).json({
+        success: false,
+        message: "Only Admin can login via OTP"
+      });
     }
 
     if (user.status !== "active") {
-      return res.status(403).json({ message: "User is inactive. Please contact admin." });
+      return res.status(403).json({
+        success: false,
+        message: "User is inactive"
+      });
     }
 
+    // Static OTP (replace with SMS service later)
+    const otp = "999999";
+    otpStore.set(phone, otp);
+    setTimeout(() => otpStore.delete(phone), 5 * 60 * 1000);
+
+    return res.status(200).json({
+      success: true,
+      message: "OTP sent successfully"
+    });
+
+  } catch (error) {
+    console.error("sendOtp error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error"
+    });
+  }
+};
+
+
+const verifyOtp = async (req, res) => {
+  try {
+    const phone = String(req.body.phone).trim();
+    const otp = String(req.body.otp).trim();
+
+    if (!phone || !otp) {
+      return res.status(400).json({
+        success: false,
+        message: "Phone and OTP are required"
+      });
+    }
+
+    const storedOtp = otpStore.get(phone);
+    if (!storedOtp || storedOtp !== otp) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid or expired OTP"
+      });
+    }
+
+    const user = await admin.findOne({ mobile: phone });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    // 🔒 Admin only
+    if (user.role !== "Admin") {
+      return res.status(403).json({
+        success: false,
+        message: "Only Admin can login"
+      });
+    }
+
+    if (user.status !== "active") {
+      return res.status(403).json({
+        success: false,
+        message: "User is inactive"
+      });
+    }
+
+    // ✅ FINAL TOKEN (matches LIVE exactly)
     const token = jwt.sign(
-      { id: user._id, role: user.role,user_type:1 },
-      process.env.JWT_SECRET || "your_super_secret_key_here",
+      {
+        id: user._id,
+        role: user.role
+      },
+      process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
 
@@ -802,15 +842,19 @@ const verifyOtp = async (req, res) => {
         name: user.name,
         email: user.email,
         mobile: user.mobile,
-        role: user.role,
-        status: user.status,
-      },
+        role: user.role
+      }
     });
-  } catch (err) {
-    console.error("Error during OTP verification:", err);
-    return res.status(500).json({ message: "Server error" });
+
+  } catch (error) {
+    console.error("verifyOtp error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error"
+    });
   }
 };
+
 
 async function getAllAdmin(req, res) {
   try {
