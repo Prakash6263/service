@@ -1,550 +1,4 @@
-// const mongoose = require("mongoose");
-// require("dotenv").config()
-// const bikeModel = require("../models/bikeModel")
-// const jwt_decode = require("jwt-decode")
-// const Role = require("../models/Roles_modal")
-// const Admin = require("../models/admin_model")
-// const BikeVariant = require("../models/bikeVariantModel")
-// const BikeModel = require("../models/bikeModel")
-// const BikeCompany = require("../models/bikeCompanyModel")
-
-// async function checkPermission(user_id, requiredPermission) {
-//   try {
-//     const userRole = await Role.findOne({ subAdmin: user_id })
-//     console.log(userRole, "1")
-//     if (!userRole) {
-//       return false
-//     }
-//     const permissions = userRole.permissions
-//     console.log(permissions, "2")
-
-//     const [module, permission] = requiredPermission.split(".")
-
-//     // Check if the module and permission exist in permissions object
-//     if (!permissions || !permissions[module] || !permissions[module][permission]) {
-//       return false
-//     }
-//     return true
-//   } catch (error) {
-//     console.error("Error while checking permission:", error)
-//     return false
-//   }
-// }
-
-// async function addBike(req, res) {
-//   // created by  store or vendor
-//   try {
-//     if (!req.headers.token) {
-//       return res.status(401).send({ status: 401, message: "Token not provided" })
-//     }
-//     const data = jwt_decode(req.headers.token)
-//     const user_id = data.user_id
-//     const user_type = data.user_type
-//     const type = data.type
-//     if (user_id == null || (user_type != 3 && user_type != 1)) {
-//       var response = {
-//         status: 401,
-//         message: "admin is un-authorised !",
-//       }
-//       return res.status(401).send(response)
-//     }
-
-//     const { name, model, bike_cc } = req.body
-
-//     // var image = req.files.image[0].filename;
-//     // const userdetail = await admin.findOne({_id:user_id});
-
-//     const bikes = await bikeModel.aggregate([
-//       {
-//         $match: {
-//           $and: [
-//             {
-//               model: model,
-//             },
-//             {
-//               bike_cc: Number.parseInt(bike_cc),
-//             },
-//           ],
-//         },
-//       },
-//     ])
-
-//     if (bikes.length > 0) {
-//       return res.status(201).send({
-//         status: 201,
-//         message: "Bike is Already Added",
-//       })
-//     }
-
-//     const datas = {
-//       name: name,
-//       model: model,
-//       bike_cc: bike_cc,
-//     }
-
-//     const bikeRes = await bikeModel.create(datas)
-
-//     if (bikeRes) {
-//       return res.status(200).send({
-//         status: 200,
-//         message: "Vehicle added successfully",
-//         data: bikeRes,
-//       })
-//     } else {
-//       return res.status(201).send({
-//         status: 201,
-//         message: "Unable to add Vehicle",
-//       })
-//     }
-//   } catch (error) {
-//     console.log("error", error)
-//     return res.status(201).send({
-//       status: 201,
-//       message: "Operation was not successful",
-//     })
-//   }
-// }
-
-// async function bikeList(req, res) {
-//   try {
-//     if (!req.headers.token) {
-//       return res.status(401).send({ status: 401, message: "Token not provided" })
-//     }
-//     const data = jwt_decode(req.headers.token)
-//     const user_id = data.user_id
-//     const user_type = data.user_type
-//     const type = data.type
-//     if (user_id == null || (user_type != 1 && user_type != 3 && user_type != 4)) {
-//       var response = {
-//         status: 401,
-//         message: "admin is un-authorised !",
-//       }
-//       return res.status(401).send(response)
-//     }
-
-//     var bikeRes = await bikeModel.find({}).sort({ "_id": -1 });
-//     // var bikeRes = await bikeModel.find({}).sort({ model: 1 })
-
-//     if (bikeRes.length > 0) {
-//       return res.status(200).send({
-//         status: 200,
-//         message: "success",
-//         data: bikeRes,
-//       })
-//     } else {
-//       return res.status(201).send({
-//         status: 201,
-//         data: [],
-//         message: "No Vehicle Found",
-//       })
-//     }
-//   } catch (error) {
-//     console.log("error", error)
-//     return res.status(201).send({
-//       status: 201,
-//       message: "Operation was not successful",
-//     })
-//   }
-// }
-
-// async function deleteBike(req, res) {
-//   try {
-//     if (!req.headers.token) {
-//       return res.status(401).send({ status: 401, message: "Token not provided" })
-//     }
-//     const data = jwt_decode(req.headers.token)
-//     const user_id = data.user_id || data.id
-//     const user_type = data.user_type
-//     const role = data.role
-
-//     if (user_id == null || (user_type != 1 && role !== "Admin")) {
-//       return res.status(401).send({
-//         status: 401,
-//         message: "Only Admin can delete bikes!",
-//       })
-//     }
-
-//     const bike_id = req.params.id
-
-//     const bikeRes = await BikeVariant.findByIdAndDelete(bike_id)
-
-//     if (bikeRes) {
-//       return res.status(200).send({
-//         status: 200,
-//         message: "vehicle deleted successfully",
-//       })
-//     } else {
-//       const modelRes = await BikeModel.findByIdAndDelete(bike_id)
-//       if (modelRes) {
-//         return res.status(200).send({
-//           status: 200,
-//           message: "vehicle model deleted successfully",
-//         })
-//       }
-//       return res.status(404).send({
-//         status: 404,
-//         message: "vehicle not found",
-//       })
-//     }
-//   } catch (error) {
-//     console.log("[v0] error in deleteBike:", error)
-//     return res.status(500).send({
-//       status: 500,
-//       message: "Internal server error during deletion",
-//     })
-//   }
-// }
-
-// async function editBike(req, res) {
-//   try {
-//     if (!req.headers.token) {
-//       return res.status(401).send({ status: 401, message: "Token not provided" })
-//     }
-//     const data = jwt_decode(req.headers.token)
-//     const user_id = data.user_id || data.id
-//     const user_type = data.user_type
-//     const role = data.role
-
-//     if (user_id == null || (user_type != 1 && role !== "Admin")) {
-//       return res.status(401).send({
-//         status: 401,
-//         message: "Only Admin can edit bikes!",
-//       })
-//     }
-//     const { name, model_name, engine_cc, extra_charges, variant_name } = req.body
-//     const bike_id = req.params.id
-
-//     const updateData = { variant_name: name || variant_name, engine_cc: engine_cc, extra_charges }
-//     const bikeResult = await BikeVariant.findByIdAndUpdate(bike_id, { $set: updateData }, { new: true })
-
-//     if (bikeResult) {
-//       return res.status(200).send({
-//         status: 200,
-//         message: "Vehicle updated successfully",
-//         data: bikeResult,
-//       })
-//     } else {
-//       const modelUpdate = { model_name: model_name || name }
-//       const modelResult = await BikeModel.findByIdAndUpdate(bike_id, { $set: modelUpdate }, { new: true })
-//       if (modelResult) {
-//         return res.status(200).send({
-//           status: 200,
-//           message: "Vehicle model updated successfully",
-//           data: modelResult,
-//         })
-//       }
-//       return res.status(404).send({
-//         status: 404,
-//         message: "Vehicle not found",
-//       })
-//     }
-//   } catch (error) {
-//     console.log("[v0] error in editBike:", error)
-//     return res.status(500).send({
-//       status: 500,
-//       message: "Operation was not successful",
-//     })
-//   }
-// }
-
-// async function getBike(req, res) {
-//   try {
-//     if (!req.headers.token) {
-//       return res.status(401).send({ status: 401, message: "Token not provided" })
-//     }
-//     const data = jwt_decode(req.headers.token)
-//     const user_id = data.user_id
-//     const user_type = data.user_type
-//     const type = data.type
-//     if (user_id == null || (user_type != 4 && user_type != 1 && user_type != 3 && user_type != 2)) {
-//       var response = {
-//         status: 401,
-//         message: "admin is un-authorised !",
-//       }
-//       return res.status(401).send(response)
-//     }
-
-//     var bikeRes = await bikeModel.findById(req.params.id)
-//     if (!bikeRes) {
-//       return res.status(404).send({
-//         status: 404,
-//         message: "No Bike Found",
-//       })
-//     }
-//     return res.status(200).send({
-//       status: 200,
-//       message: "success",
-//       data: bikeRes,
-//     })
-//   } catch (error) {
-//     console.log("error", error)
-//     return res.status(500).send({
-//       status: 500,
-//       message: "Operation was not successful",
-//     })
-//   }
-// }
-
-// const addBikeCompany = async (req, res) => {
-//   try {
-//     let { name } = req.body
-
-//     if (!name) {
-//       return res.status(200).json({
-//         status: 200,
-//         message: "Bike company name is required!",
-//         data: [],
-//       })
-//     }
-
-//     name = name.trim().toUpperCase() // Normalize to uppercase
-
-//     const existingCompany = await BikeCompany.findOne({ name })
-
-//     if (existingCompany) {
-//       return res.status(200).json({
-//         status: 200,
-//         message: "Bike company already exists!",
-//         data: [],
-//       })
-//     }
-
-//     const newCompany = new BikeCompany({ name })
-//     await newCompany.save()
-
-//     res.status(200).json({
-//       status: 200,
-//       message: "Bike company added successfully",
-//       data: newCompany,
-//     })
-//   } catch (error) {
-//     console.error("Error adding bike company:", error)
-//     res.status(500).json({
-//       status: 500,
-//       message: "Internal Server Error",
-//       data: [],
-//     })
-//   }
-// }
-
-// const addBikeModel = async (req, res) => {
-//   try {
-//     const { company_id, model_name } = req.body
-
-//     if (!company_id || !model_name) {
-//       return res.status(200).json({
-//         status: 200,
-//         message: "company_id and model_name are required!",
-//         data: [],
-//       })
-//     }
-
-//     const normalizedModelName = model_name.trim().toUpperCase()
-
-//     // Check if model already exists for the same company (case-insensitive)
-//     const existingModel = await BikeModel.findOne({
-//       company_id,
-//       model_name: normalizedModelName,
-//     })
-
-//     if (existingModel) {
-//       return res.status(200).json({
-//         status: 200,
-//         message: "Bike model already exists for this company!",
-//         data: [],
-//       })
-//     }
-
-//     const newModel = new BikeModel({
-//       company_id,
-//       model_name: normalizedModelName,
-//     })
-
-//     await newModel.save()
-
-//     res.status(200).json({
-//       status: 200,
-//       message: "Bike model added successfully",
-//       data: newModel,
-//     })
-//   } catch (error) {
-//     console.error("Error adding bike model:", error)
-//     res.status(500).json({
-//       status: 500,
-//       message: "Internal Server Error",
-//       data: [],
-//     })
-//   }
-// }
-
-// const addBikeVariant = async (req, res) => {
-//   try {
-//     const { model_id, variant_name, engine_cc } = req.body
-
-//     if (!model_id || !variant_name || !engine_cc) {
-//       return res
-//         .status(200)
-//         .json({ status: 200, message: "model_id, variant_name, and engine_cc are required!", data: [] })
-//     }
-
-//     const newVariant = new BikeVariant({ model_id, variant_name, engine_cc })
-//     await newVariant.save()
-
-//     res.status(200).json({ status: 200, message: "Bike variant added successfully", data: newVariant })
-//   } catch (error) {
-//     console.error("Error adding bike variant:", error)
-//     res.status(500).json({ status: 500, message: "Internal Server Error", data: [] })
-//   }
-// }
-
-// const getBikeCompanies = async (req, res) => {
-//   try {
-//     const companies = await BikeCompany.find().sort({ name: 1 })
-
-//     if (!companies.length) {
-//       return res.status(200).json({ status: 200, message: "No bike companies found!", data: [] })
-//     }
-
-//     res.status(200).json({ status: 200, message: "Bike companies retrieved successfully!", data: companies })
-//   } catch (error) {
-//     console.error("Error fetching bike companies:", error)
-//     res.status(500).json({ status: 500, message: "Internal Server Error", data: [] })
-//   }
-// }
-
-// const getBikeModels = async (req, res) => {
-//   try {
-//     const { company_id } = req.params
-
-//     if (!company_id) {
-//       return res.status(200).json({ status: 200, message: "company_id is required!", data: [] })
-//     }
-
-//     const models = await BikeModel.find({ company_id }).sort({ model_name: 1 })
-
-//     if (!models.length) {
-//       return res.status(200).json({ status: 200, message: "No models found for this company!", data: [] })
-//     }
-
-//     res.status(200).json({ status: 200, message: "Bike models retrieved successfully!", data: models })
-//   } catch (error) {
-//     console.error("Error fetching bike models:", error)
-//     res.status(500).json({ status: 500, message: "Internal Server Error", data: [] })
-//   }
-// }
-
-// const getBikeVariants = async (req, res) => {
-//   try {
-//     const { model_id } = req.params
-
-//     if (!model_id) {
-//       return res.status(200).json({ status: 200, message: "model_id is required!", data: [] })
-//     }
-
-//     const variants = await BikeVariant.find({ model_id }).sort({ engine_cc: 1 })
-
-//     if (!variants.length) {
-//       return res.status(200).json({ status: 200, message: "No variants found for this model!", data: [] })
-//     }
-
-//     res.status(200).json({ status: 200, message: "Bike variants retrieved successfully!", data: variants })
-//   } catch (error) {
-//     console.error("Error fetching bike variants:", error)
-//     res.status(500).json({ status: 500, message: "Internal Server Error", data: [] })
-//   }
-// }
-
-// const getAllBikes = async (req, res) => {
-//   try {
-//     const companies = await BikeCompany.find()
-//       .populate({
-//         path: "models",
-//         select: "model_name",
-//         populate: {
-//           path: "variants",
-//           select: "variant_name engine_cc",
-//         },
-//       })
-//       .lean()
-
-//     res.status(200).json({
-//       status: 200,
-//       message: "All bikes retrieved successfully",
-//       data: companies,
-//     })
-//   } catch (error) {
-//     console.error("Error fetching bikes:", error)
-//     res.status(500).json({ status: 500, message: "Internal Server Error", data: [] })
-//   }
-// }
-
-
-// async function getCcByCompany(req, res) {
-//   try {
-//     const { companyId } = req.params;
-
-//     if (!companyId || !mongoose.Types.ObjectId.isValid(companyId)) {
-//       return res.status(400).json({
-//         status: false,
-//         message: "Valid companyId is required"
-//       });
-//     }
-
-//     // 1. Get models of the company
-//     const models = await BikeModel.find({ company_id: companyId }).select("_id");
-
-//     if (!models.length) {
-//       return res.status(200).json({
-//         status: true,
-//         data: []
-//       });
-//     }
-
-//     const modelIds = models.map(m => m._id);
-
-//     // 2. Get variants → CC
-//     const variants = await BikeVariant.find({
-//       model_id: { $in: modelIds }
-//     }).select("engine_cc");
-
-//     // 3. Unique + sorted CC list
-//     const ccList = [
-//       ...new Set(variants.map(v => v.engine_cc))
-//     ].sort((a, b) => a - b);
-
-//     return res.status(200).json({
-//       status: true,
-//       message: "CC list fetched successfully",
-//       data: ccList
-//     });
-
-//   } catch (error) {
-//     console.error("Error fetching CC by company:", error);
-//     return res.status(500).json({
-//       status: false,
-//       message: "Internal Server Error"
-//     });
-//   }
-// }
-// module.exports = {
-//   addBike,
-//   bikeList,
-//   deleteBike,
-//   editBike,
-//   getBike,
-//   addBikeCompany,
-//   addBikeModel,
-//   addBikeVariant,
-//   getBikeVariants,
-//   getBikeModels,
-//   getBikeCompanies,
-//   getAllBikes,
-//   getCcByCompany
-// }
-
-
-
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 require("dotenv").config()
 const bikeModel = require("../models/bikeModel")
 const jwt_decode = require("jwt-decode")
@@ -668,7 +122,7 @@ async function bikeList(req, res) {
       return res.status(401).send(response)
     }
 
-    var bikeRes = await bikeModel.find({}).sort({ _id: -1 })
+    var bikeRes = await bikeModel.find({}).sort({ "_id": -1 });
     // var bikeRes = await bikeModel.find({}).sort({ model: 1 })
 
     if (bikeRes.length > 0) {
@@ -696,117 +150,102 @@ async function bikeList(req, res) {
 async function deleteBike(req, res) {
   try {
     if (!req.headers.token) {
-      return res.status(401).json({
+      return res.status(401).send({ status: 401, message: "Token not provided" })
+    }
+    const data = jwt_decode(req.headers.token)
+    const user_id = data.user_id || data.id
+    const user_type = data.user_type
+    const role = data.role
+
+    if (user_id == null || (user_type != 1 && role !== "Admin")) {
+      return res.status(401).send({
         status: 401,
-        message: "Token not provided",
-      });
+        message: "Only Admin can delete bikes!",
+      })
     }
 
-    const data = jwt_decode(req.headers.token);
+    const bike_id = req.params.id
 
-    const userId = data.id;     // ✅ correct
-    const role = data.role;     // ✅ correct
+    const bikeRes = await BikeVariant.findByIdAndDelete(bike_id)
 
-    // 🔒 Admin-only access
-    if (!userId || role !== "Admin") {
-      return res.status(403).json({
-        status: 403,
-        message: "Only Admin can delete bikes",
-      });
-    }
-
-    const bikeId = req.params.id;
-
-    // Try deleting variant first
-    const variantDeleted = await BikeVariant.findByIdAndDelete(bikeId);
-    if (variantDeleted) {
-      return res.status(200).json({
+    if (bikeRes) {
+      return res.status(200).send({
         status: 200,
-        message: "Bike variant deleted successfully",
-      });
+        message: "vehicle deleted successfully",
+      })
+    } else {
+      const modelRes = await BikeModel.findByIdAndDelete(bike_id)
+      if (modelRes) {
+        return res.status(200).send({
+          status: 200,
+          message: "vehicle model deleted successfully",
+        })
+      }
+      return res.status(404).send({
+        status: 404,
+        message: "vehicle not found",
+      })
     }
-
-    // Try deleting model
-    const modelDeleted = await BikeModel.findByIdAndDelete(bikeId);
-    if (modelDeleted) {
-      return res.status(200).json({
-        status: 200,
-        message: "Bike model deleted successfully",
-      });
-    }
-
-    return res.status(404).json({
-      status: 404,
-      message: "Bike not found",
-    });
-
   } catch (error) {
-    console.error("deleteBike error:", error);
-    return res.status(500).json({
+    console.log("[v0] error in deleteBike:", error)
+    return res.status(500).send({
       status: 500,
-      message: "Internal server error",
-    });
+      message: "Internal server error during deletion",
+    })
   }
 }
 
 async function editBike(req, res) {
   try {
     if (!req.headers.token) {
-      return res.status(401).json({ message: "Token not provided" });
+      return res.status(401).send({ status: 401, message: "Token not provided" })
     }
+    const data = jwt_decode(req.headers.token)
+    const user_id = data.user_id || data.id
+    const user_type = data.user_type
+    const role = data.role
 
-    const data = jwt_decode(req.headers.token);
-    const role = data.role;
-
-    if (role !== "Admin") {
-      return res.status(403).json({
-        message: "Only Admin can edit bikes",
-      });
+    if (user_id == null || (user_type != 1 && role !== "Admin")) {
+      return res.status(401).send({
+        status: 401,
+        message: "Only Admin can edit bikes!",
+      })
     }
+    const { name, model_name, engine_cc, extra_charges, variant_name } = req.body
+    const bike_id = req.params.id
 
-    const { name, model_name, engine_cc, extra_charges, variant_name } = req.body;
-    const bikeId = req.params.id;
+    const updateData = { variant_name: name || variant_name, engine_cc: engine_cc, extra_charges }
+    const bikeResult = await BikeVariant.findByIdAndUpdate(bike_id, { $set: updateData }, { new: true })
 
-    const updateData = {
-      variant_name: name || variant_name,
-      engine_cc,
-      extra_charges,
-    };
-
-    const variantUpdated = await BikeVariant.findByIdAndUpdate(
-      bikeId,
-      { $set: updateData },
-      { new: true }
-    );
-
-    if (variantUpdated) {
-      return res.status(200).json({
-        message: "Bike variant updated successfully",
-        data: variantUpdated,
-      });
+    if (bikeResult) {
+      return res.status(200).send({
+        status: 200,
+        message: "Vehicle updated successfully",
+        data: bikeResult,
+      })
+    } else {
+      const modelUpdate = { model_name: model_name || name }
+      const modelResult = await BikeModel.findByIdAndUpdate(bike_id, { $set: modelUpdate }, { new: true })
+      if (modelResult) {
+        return res.status(200).send({
+          status: 200,
+          message: "Vehicle model updated successfully",
+          data: modelResult,
+        })
+      }
+      return res.status(404).send({
+        status: 404,
+        message: "Vehicle not found",
+      })
     }
-
-    const modelUpdated = await BikeModel.findByIdAndUpdate(
-      bikeId,
-      { $set: { model_name: model_name || name } },
-      { new: true }
-    );
-
-    if (modelUpdated) {
-      return res.status(200).json({
-        message: "Bike model updated successfully",
-        data: modelUpdated,
-      });
-    }
-
-    return res.status(404).json({ message: "Bike not found" });
-
   } catch (error) {
-    console.error("editBike error:", error);
-    return res.status(500).json({ message: "Server error" });
+    console.log("[v0] error in editBike:", error)
+    return res.status(500).send({
+      status: 500,
+      message: "Operation was not successful",
+    })
   }
 }
-
 
 async function getBike(req, res) {
   try {
@@ -1039,51 +478,54 @@ const getAllBikes = async (req, res) => {
   }
 }
 
-const getCcByCompany = async (req, res) => {
+
+async function getCcByCompany(req, res) {
   try {
-    const { companyId } = req.params
+    const { companyId } = req.params;
 
     if (!companyId || !mongoose.Types.ObjectId.isValid(companyId)) {
       return res.status(400).json({
         status: false,
-        message: "Valid companyId is required",
-      })
+        message: "Valid companyId is required"
+      });
     }
 
     // 1. Get models of the company
-    const models = await BikeModel.find({ company_id: companyId }).select("_id")
+    const models = await BikeModel.find({ company_id: companyId }).select("_id");
 
     if (!models.length) {
       return res.status(200).json({
         status: true,
-        data: [],
-      })
+        data: []
+      });
     }
 
-    const modelIds = models.map((m) => m._id)
+    const modelIds = models.map(m => m._id);
 
     // 2. Get variants → CC
     const variants = await BikeVariant.find({
-      model_id: { $in: modelIds },
-    }).select("engine_cc")
+      model_id: { $in: modelIds }
+    }).select("engine_cc");
 
     // 3. Unique + sorted CC list
-    const ccList = [...new Set(variants.map((v) => v.engine_cc))].sort((a, b) => a - b)
+    const ccList = [
+      ...new Set(variants.map(v => v.engine_cc))
+    ].sort((a, b) => a - b);
 
     return res.status(200).json({
       status: true,
       message: "CC list fetched successfully",
-      data: ccList,
-    })
+      data: ccList
+    });
+
   } catch (error) {
-    console.error("Error fetching CC by company:", error)
+    console.error("Error fetching CC by company:", error);
     return res.status(500).json({
       status: false,
-      message: "Internal Server Error",
-    })
+      message: "Internal Server Error"
+    });
   }
 }
-
 module.exports = {
   addBike,
   bikeList,
@@ -1097,5 +539,5 @@ module.exports = {
   getBikeModels,
   getBikeCompanies,
   getAllBikes,
-  getCcByCompany,
+  getCcByCompany
 }
