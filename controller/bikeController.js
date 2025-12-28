@@ -1024,7 +1024,7 @@ const getAllBikes = async (req, res) => {
   }
 }
 
-async function getCcByCompany(req, res) {
+const getCcByCompany = async (req, res) => {
   try {
     const { companyId } = req.params
 
