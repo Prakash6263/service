@@ -15,7 +15,8 @@ var {
   getBikeModels,
   getBikeVariants,
   getAllBikes,
-  getCcByCompany
+  getCcByCompany,
+  getBikeDetailsByCompany,
 } = require("../controller/bikeController")
 const router = express.Router()
 
@@ -40,9 +41,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage: storage,
-  limits: {
-    fileSize: 20 * 1048576, // 20MB
-  },
 })
 
 /* POST users listing. */
@@ -58,6 +56,7 @@ router.get("/get-bike-companies", getBikeCompanies)
 router.get("/get-bike-models/:company_id", getBikeModels)
 router.get("/get-bike-variants/:model_id", getBikeVariants)
 router.get("/bikes", getAllBikes)
-router.get("/bikes/cc-by-company/:companyId", getCcByCompany);
+router.get("/bikes/cc-by-company/:companyId", getCcByCompany)
+router.get("/bikes/filter-by-company", getBikeDetailsByCompany)
 
 module.exports = router

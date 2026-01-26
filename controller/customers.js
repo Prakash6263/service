@@ -168,7 +168,7 @@ async function addProfile(req, res) {
     user.isProfile = true;
 
     if (req.file) {
-      user.image = req.file.filename;
+      user.image = `uploads/userprofile/${req.file.filename}`;
     }
 
     await user.save();
@@ -505,7 +505,8 @@ async function changeImage(req, res) {
     }
 
     // ✅ Update the image and return full URL
-    customer.image = req.file.filename;
+    customer.image = `uploads/userprofile/${req.file.filename}`;
+
     await customer.save();
 
     const imageUrl = `${process.env.BASE_URL}/${customer.image}`;

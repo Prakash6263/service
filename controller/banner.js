@@ -362,13 +362,16 @@ async function editbanner(req, res) {
       status = "expired";
     }
 
-    const updateData = {
-      name,
-      banner_image,
-      from_date: fromDate,
-      expiry_date: expiryDate,
-      status,
-    };
+   const updateData = {
+  name,
+  banner_image: banner_image?.includes("uploads/")
+    ? banner_image
+    : `uploads/banners/${banner_image}`,
+  from_date: fromDate,
+  expiry_date: expiryDate,
+  status,
+};
+
 
     const updatedBanner = await Banner.findByIdAndUpdate(banner_id, { $set: updateData }, { new: true });
 
@@ -414,7 +417,7 @@ async function addbanner(req, res) {
 
     const bannerData = {
       name,
-      banner_image: req.file.filename,
+      banner_image: `uploads/banners/${req.file.filename}`,
       from_date: fromDate,
       expiry_date: expiryDate,
       status,

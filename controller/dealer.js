@@ -239,7 +239,7 @@ async function addDealer1(req, res) {
       const data = {
         dealer_id: dealer_id,
         dealerId: dealerId,
-        image: req.file.filename,
+        image: `uploads/dealer-services/${req.file.filename}`,
         name: name,
         description: description,
         area: area,
@@ -428,7 +428,8 @@ async function editDealer(req, res) {
       updateData.documents = { ...existingDealer.documents };
 
       if (req.files.panCardFront) {
-        updateData.documents.panCardFront = req.files.panCardFront[0].filename;
+        updateData.documents.panCardFront =
+  `uploads/dealer-documents/${req.files.panCardFront[0].filename}`;
         // Delete old file if exists
         if (existingDealer.documents.panCardFront) {
           fs.unlinkSync(path.join(uploadDir, existingDealer.documents.panCardFront));
@@ -441,7 +442,10 @@ async function editDealer(req, res) {
     if (req.files?.shopImages) {
       updateData.shopImages = [
         ...existingDealer.shopImages,
-        ...req.files.shopImages.map(file => file.filename)
+        ...req.files.shopImages.map(
+  file => `uploads/dealer-documents/${file.filename}`
+)
+
       ];
     }
 
@@ -1501,7 +1505,9 @@ const addDealerShopDetails = async (req, res) => {
 
     // Append new shopImages if provided
     if (req.files?.shopImages) {
-      const newImages = req.files.shopImages.map(file => file.filename);
+      const newImages = req.files.shopImages.map(
+  file => `uploads/dealer-documents/${file.filename}`
+);
       updateData.shopImages = dealer.shopImages
         ? [...dealer.shopImages, ...newImages]
         : newImages;
@@ -1570,16 +1576,20 @@ const addDealerDocuments = async (req, res) => {
 
     // ✅ Handle Aadhar & PAN Card Image Uploads
     if (req.files?.adharCardFront) {
-      updateData.adharCardFront = req.files.adharCardFront[0].filename;
+      updateData.adharCardFront =
+  `uploads/dealer-documents/${req.files.adharCardFront[0].filename}`;
     }
     if (req.files?.adharCardBack) {
-      updateData.adharCardBack = req.files.adharCardBack[0].filename;
+     updateData.adharCardBack =
+  `uploads/dealer-documents/${req.files.adharCardBack[0].filename}`;
     }
     if (req.files?.panCardFront) {
-      updateData.panCardFront = req.files.panCardFront[0].filename;
+     updateData.panCardFront =
+  `uploads/dealer-documents/${req.files.panCardFront[0].filename}`;
     }
     if (req.files?.panCardBack) {
-      updateData.panCardBack = req.files.panCardBack[0].filename;
+      updateData.panCardBack =
+  `uploads/dealer-documents/${req.files.panCardBack[0].filename}`;
     }
 
     // ✅ Set confirmation flag

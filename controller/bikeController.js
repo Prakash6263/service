@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 require("dotenv").config()
 const bikeModel = require("../models/bikeModel")
 const jwt_decode = require("jwt-decode")
@@ -7,6 +7,7 @@ const Admin = require("../models/admin_model")
 const BikeVariant = require("../models/bikeVariantModel")
 const BikeModel = require("../models/bikeModel")
 const BikeCompany = require("../models/bikeCompanyModel")
+const AdminService  = require("../models/adminService")
 
 async function checkPermission(user_id, requiredPermission) {
   try {
@@ -122,7 +123,7 @@ async function bikeList(req, res) {
       return res.status(401).send(response)
     }
 
-    var bikeRes = await bikeModel.find({}).sort({ "_id": -1 });
+    var bikeRes = await bikeModel.find({}).sort({ _id: -1 })
     // var bikeRes = await bikeModel.find({}).sort({ model: 1 })
 
     if (bikeRes.length > 0) {
@@ -478,54 +479,238 @@ const getAllBikes = async (req, res) => {
   }
 }
 
-
 async function getCcByCompany(req, res) {
   try {
-    const { companyId } = req.params;
+    const { companyIds } = req.params
 
-    if (!companyId || !mongoose.Types.ObjectId.isValid(companyId)) {
+    if (!companyIds) {
       return res.status(400).json({
         status: false,
-        message: "Valid companyId is required"
-      });
+        message: "companyIds are required",
+      })
     }
 
-    // 1. Get models of the company
-    const models = await BikeModel.find({ company_id: companyId }).select("_id");
+    const idArray = companyIds
+      .split(",")
+      .map((id) => id.trim())
+      .filter((id) => mongoose.Types.ObjectId.isValid(id))
+      .map((id) => new mongoose.Types.ObjectId(id))
+
+    console.log("[v0] Processing company IDs:", idArray)
+
+    if (!idArray.length) {
+      return res.status(400).json({
+        status: false,
+        message: "No valid company IDs provided",
+      })
+    }
+
+    const models = await BikeModel.find({ company_id: { $in: idArray } })
+      .select("_id model_name company_id")
+      .lean()
+
+    console.log("[v0] Models found for company IDs:", models.length)
 
     if (!models.length) {
-      return res.status(200).json({
-        status: true,
-        data: []
-      });
+      const companies = await BikeCompany.find({ _id: { $in: idArray } })
+        .populate("models")
+        .lean()
+      const foundModels = companies.flatMap((c) => c.models || [])
+
+      if (foundModels.length > 0) {
+        models.push(...foundModels)
+      } else {
+        return res.status(200).json({
+          status: true,
+          message: "No models found for the provided company IDs",
+          data: [],
+        })
+      }
     }
 
-    const modelIds = models.map(m => m._id);
+    const modelIds = models.map((m) => m._id)
 
-    // 2. Get variants → CC
     const variants = await BikeVariant.find({
-      model_id: { $in: modelIds }
-    }).select("engine_cc");
+      model_id: { $in: modelIds },
+    })
+      .populate({
+        path: "model_id",
+        select: "model_name company_id",
+      })
+      .lean()
 
-    // 3. Unique + sorted CC list
-    const ccList = [
-      ...new Set(variants.map(v => v.engine_cc))
-    ].sort((a, b) => a - b);
+    console.log("[v0] Variants found for model IDs:", variants.length)
+
+    const data = variants
+      .map((v) => ({
+        engine_cc: v.engine_cc,
+        company_id: v.model_id?.company_id,
+        model_id: v.model_id?._id,
+        model_name: v.model_id?.model_name,
+        variant_id: v._id,
+        variant_name: v.variant_name,
+      }))
+      .sort((a, b) => a.engine_cc - b.engine_cc)
 
     return res.status(200).json({
       status: true,
-      message: "CC list fetched successfully",
-      data: ccList
-    });
-
+      message: "Bike details fetched successfully",
+      data: data,
+    })
   } catch (error) {
-    console.error("Error fetching CC by company:", error);
+    console.error("[v0] Error fetching CC by company:", error)
     return res.status(500).json({
       status: false,
-      message: "Internal Server Error"
-    });
+      message: "Internal Server Error",
+    })
   }
 }
+
+async function getBikeDetailsByCompany(req, res) {
+  try {
+    const { companyIds } = req.query
+
+    /* =========================
+       1. Validate companyIds
+    ========================== */
+    if (!companyIds) {
+      return res.status(400).json({
+        status: 400,
+        message: "companyIds (comma-separated) are required",
+        data: [],
+      })
+    }
+
+    const idArray = companyIds
+      .split(",")
+      .map(id => id.trim())
+      .filter(id => mongoose.Types.ObjectId.isValid(id))
+      .map(id => new mongoose.Types.ObjectId(id))
+
+    if (!idArray.length) {
+      return res.status(400).json({
+        status: 400,
+        message: "No valid company IDs provided",
+        data: [],
+      })
+    }
+
+    /* =========================
+       2. Fetch already-added service bikes
+    ========================== */
+    const existingServices = await AdminService.find(
+      {},
+      { bikes: 1 }
+    ).lean()
+
+    const usedVariantKeys = new Set() // modelId_variantId
+    const usedCcOnly = new Set()      // cc fallback
+
+    existingServices.forEach(service => {
+      service.bikes.forEach(bike => {
+        if (bike.model_id && bike.variant_id) {
+          usedVariantKeys.add(
+            `${bike.model_id.toString()}_${bike.variant_id.toString()}`
+          )
+        } else if (bike.cc) {
+          usedCcOnly.add(Number(bike.cc))
+        }
+      })
+    })
+
+    /* =========================
+       3. Fetch bike details (Company → Model → Variant)
+    ========================== */
+    const bikeDetails = await BikeCompany.aggregate([
+      { $match: { _id: { $in: idArray } } },
+
+      {
+        $lookup: {
+          from: "bikemodels",
+          localField: "_id",
+          foreignField: "company_id",
+          as: "models",
+        },
+      },
+      { $unwind: { path: "$models", preserveNullAndEmptyArrays: true } },
+
+      {
+        $lookup: {
+          from: "bikevariants",
+          localField: "models._id",
+          foreignField: "model_id",
+          as: "variants",
+        },
+      },
+      { $unwind: { path: "$variants", preserveNullAndEmptyArrays: true } },
+
+      {
+        $project: {
+          company_id: "$_id",
+          company_name: "$name",
+          model_id: "$models._id",
+          model_name: "$models.model_name",
+          variant_id: "$variants._id",
+          variant_name: "$variants.variant_name",
+          engine_cc: "$variants.engine_cc",
+        },
+      },
+    ])
+
+    /* =========================
+       4. FILTER already-priced bikes
+    ========================== */
+    const filteredData = bikeDetails
+      .map(item => {
+        if (!item.model_id || !item.variant_id || !item.engine_cc) {
+          return null
+        }
+
+        const modelId = item.model_id.toString()
+        const variantId = item.variant_id.toString()
+        const cc = Number(item.engine_cc)
+
+        const variantKey = `${modelId}_${variantId}`
+
+        // ❌ Exclude if already priced
+        if (
+          usedVariantKeys.has(variantKey) ||
+          usedCcOnly.has(cc)
+        ) {
+          return null
+        }
+
+        return {
+          company_id: item.company_id,
+          company_name: item.company_name,
+          model_id: item.model_id,
+          model_name: item.model_name,
+          variant_id: item.variant_id,
+          variant_name: item.variant_name,
+          engine_cc: cc,
+        }
+      })
+      .filter(Boolean)
+      .sort((a, b) => a.engine_cc - b.engine_cc)
+
+    /* =========================
+       5. Response
+    ========================== */
+    return res.status(200).json({
+      status: 200,
+      message: "Bike details fetched successfully",
+      data: filteredData,
+    })
+  } catch (error) {
+    console.error("[getBikeDetailsByCompany] Error:", error)
+    return res.status(500).json({
+      status: 500,
+      message: "Internal Server Error",
+      data: [],
+    })
+  }
+}
+
 module.exports = {
   addBike,
   bikeList,
@@ -539,5 +724,6 @@ module.exports = {
   getBikeModels,
   getBikeCompanies,
   getAllBikes,
-  getCcByCompany
+  getCcByCompany,
+  getBikeDetailsByCompany,
 }

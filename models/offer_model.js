@@ -1,17 +1,16 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 
 const OfferSchema = new mongoose.Schema(
   {
-    service_id:{
-      type:mongoose.Schema.Types.ObjectId,
-      ref:"adminservices"
+    service_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "AdminService",
     },
-    promo_code: 
-    {
-      type:String,
-      unique:true
+    promo_code: {
+      type: String,
+      unique: true,
     },
-    // city:String,
+    // city: String,
     start_date: Date,
     end_date: Date,
     // noofuses: String,
@@ -20,9 +19,8 @@ const OfferSchema = new mongoose.Schema(
     // repeat_usage: String,
   },
   {
-    timestamps:true,  
-  }
-  )
+    timestamps: true,
+  },
+)
 
 module.exports = mongoose.model("offer", OfferSchema)
-

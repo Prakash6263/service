@@ -8,7 +8,7 @@ var { usersignin, verifyOTP, logout, sendOtp, changePassword, getProgress, updat
 
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
-    var path = `./upload/vendors`;
+    var path = `./uploads/vendors`;
     fs.mkdirsSync(path);
     callback(null, path);
   },
@@ -31,7 +31,7 @@ router.put('/progress/:section', updateProgress);
 // Form Submission Endpoints
 router.post('/basic-info/:id', updateBasicInfo);
 router.post('/location-info/:id', updateLocationInfo);
-router.post('/shop-details/:id', upload.array('shopImages', 5), updateShopDetails);
+router.post('/shop-details/:id', upload.array('shopImages', 10), updateShopDetails);
 router.post('/upload-documents/:id',
   upload.fields([
     { name: 'aadharFront', maxCount: 1 },

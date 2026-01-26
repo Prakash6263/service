@@ -1,10 +1,9 @@
-var express = require("express");
-var multer = require("multer");
-var fs = require("fs");
-var path = require("path");
+var express = require("express")
+var multer = require("multer")
+var fs = require("fs")
+var path = require("path")
 
 var {
-  addservice,
   servicelist,
   updateService,
   deleteService,
@@ -21,81 +20,154 @@ var {
   updateAdditionalServiceById,
   getAdminServiceById,
   updateAdminService,
-  deleteAdminService
-} = require("../controller/service");
+  deleteAdminService,
+  getDealerServices,
+} = require("../controller/service")
 
-var { PicknDrop } = require("../controller/pickupndrop");
+var {
+  createBaseService,
+  listBaseServices,
+  getBaseServiceById,
+  updateBaseService,
+  deleteBaseService,
+} = require("../controller/baseService")
 
-const router = express.Router();
+var { PicknDrop } = require("../controller/pickupndrop")
 
-// Define the folder path
-const uploadDir = path.join(__dirname, "../uploads/admin-services");
+const router = express.Router()
 
-
-// Ensure the folder exists
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+/* =====================================================
+   DEALER SERVICES → uploads/services
+===================================================== */
+const dealerServiceDir = path.join(__dirname, "../uploads/services")
+if (!fs.existsSync(dealerServiceDir)) {
+  fs.mkdirSync(dealerServiceDir, { recursive: true })
 }
 
-// Set up Multer storage configuration
-const storage = multer.diskStorage({
-  destination: function (req, file, callback) {
-    callback(null, uploadDir);
-  },
-  filename: function (req, file, callback) {
-    const ext = path.extname(file.originalname);
-    const uniqueName = `${file.fieldname}-${Date.now()}${ext}`;
-    callback(null, uniqueName);
-  },
-});
+const dealerServiceUpload = multer({
+  storage: multer.diskStorage({
+    destination: dealerServiceDir,
+    filename: (req, file, cb) => {
+      cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`)
+    },
+  }),
+})
 
-const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: 20 * 1024 * 1024,
-  },
-});
+/* =====================================================
+   ADMIN SERVICES → uploads/admin-services
+===================================================== */
+const adminServiceDir = path.join(__dirname, "../uploads/admin-services")
+if (!fs.existsSync(adminServiceDir)) {
+  fs.mkdirSync(adminServiceDir, { recursive: true })
+}
 
-// Define Routes
-router.post("/addservice", upload.single("images"), addservice);
-// router.post("/addservice",  addservice);
-router.get("/servicelist", servicelist);
-router.get("/edit-service/:id", getServiceById);
-router.put(
-  "/update-service/:id",
-  upload.single("images"),
-  updateServiceById
-);
-router.put(
-  "/updateservice",
-  upload.fields([{ name: "service_image", maxCount: 1 }]),
-  updateService
-);
-router.delete("/deleteService", deleteService);
-router.get("/service/:id", singleService);
-router.post("/PicknDrop", PicknDrop);
-router.get("/dealer/:dealer_id", getServicesByDealer);
-router.post("/adminservices/create", upload.single("image"), addAdminService);
-router.get("/adminservices", listAdminServices);
-router.get("/admin/services/:id", getAdminServiceById);
-router.put(
-  "/admin/services/:id",
-  upload.single("image"),
-  updateAdminService
-);
+const adminServiceUpload = multer({
+  storage: multer.diskStorage({
+    destination: adminServiceDir,
+    filename: (req, file, cb) => {
+      cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`)
+    },
+  }),
+})
 
-router.delete(
-  "/admin/services/:id",
-  deleteAdminService
-);
+/* =====================================================
+   BASE SERVICES → uploads/base-services
+===================================================== */
+const baseServiceDir = path.join(__dirname, "../uploads/base-services")
+if (!fs.existsSync(baseServiceDir)) {
+  fs.mkdirSync(baseServiceDir, { recursive: true })
+}
 
+const baseServiceUpload = multer({
+  storage: multer.diskStorage({
+    destination: baseServiceDir,
+    filename: (req, file, cb) => {
+      cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`)
+    },
+  }),
+})
 
-// Aadditional Services 
-router.post("/create-additional-service", upload.single("images"), addAdditionalService);
-router.get("/additionalservicelist", additionalservicelist);
-router.delete("/deleteAdditionalService/:id", deleteAdditionaalService);
-router.get("/getAdditionalService/:id", getAdditionalServiceById);
-router.put("/updateAdditionalService/:id",upload.single('image'), updateAdditionalServiceById);
+/* =====================================================
+   ADDITIONAL SERVICES → uploads/additional-options
+===================================================== */
+const additionalServiceDir = path.join(__dirname, "../uploads/additional-options")
+if (!fs.existsSync(additionalServiceDir)) {
+  fs.mkdirSync(additionalServiceDir, { recursive: true })
+}
 
+const additionalServiceUpload = multer({
+  storage: multer.diskStorage({
+    destination: additionalServiceDir,
+    filename: (req, file, cb) => {
+      cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`)
+    },
+  }),
+})
 
-module.exports = router;
+/* =====================================================
+   DEALER SERVICE ROUTES
+===================================================== */
+router.get("/servicelist", servicelist)
+router.get("/edit-service/:id", getServiceById)
+
+router.put("/update-service/:id", dealerServiceUpload.single("images"), updateServiceById)
+
+router.put("/updateservice", dealerServiceUpload.fields([{ name: "service_image", maxCount: 1 }]), updateService)
+
+router.delete("/deleteService", deleteService)
+router.get("/service/:id", singleService)
+
+/* =====================================================
+   NEW: DEALER SERVICES (Read-Only) - MUST BE BEFORE :dealer_id
+===================================================== */
+router.get("/dealer/services", getDealerServices)
+
+/* =====================================================
+   DEALER SERVICES BY ID
+===================================================== */
+router.get("/dealer/:dealer_id", getServicesByDealer)
+
+/* =====================================================
+   PICK & DROP
+===================================================== */
+router.post("/PicknDrop", PicknDrop)
+
+/* =====================================================
+   BASE SERVICE ROUTES (Admin Only)
+===================================================== */
+router.post("/admin/base-services", baseServiceUpload.single("image"), createBaseService)
+
+router.get("/admin/base-services", listBaseServices)
+
+router.get("/admin/base-services/:id", getBaseServiceById)
+
+router.put("/admin/base-services/:id", baseServiceUpload.single("image"), updateBaseService)
+
+router.delete("/admin/base-services/:id", deleteBaseService)
+
+/* =====================================================
+   ADMIN SERVICE ROUTES (Refactored)
+===================================================== */
+router.post("/adminservices/create", adminServiceUpload.single("image"), addAdminService)
+
+router.get("/adminservices", listAdminServices)
+router.get("/admin/services/:id", getAdminServiceById)
+
+router.put("/admin/services/:id", adminServiceUpload.single("image"), updateAdminService)
+
+router.delete("/admin/services/:id", deleteAdminService)
+
+/* =====================================================
+   ADDITIONAL SERVICE ROUTES
+===================================================== */
+router.post("/create-additional-service", additionalServiceUpload.single("images"), addAdditionalService)
+
+router.get("/additionalservicelist", additionalservicelist)
+
+router.delete("/deleteAdditionalService/:id", deleteAdditionaalService)
+
+router.get("/getAdditionalService/:id", getAdditionalServiceById)
+
+router.put("/updateAdditionalService/:id", additionalServiceUpload.single("image"), updateAdditionalServiceById)
+
+module.exports = router
