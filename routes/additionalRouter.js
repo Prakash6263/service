@@ -30,13 +30,40 @@ const additionalServiceUpload = multer({
   }),
 })
 
+/* =====================================================
+   ROUTES FOR BASE SERVICE PATTERN
+===================================================== */
+
+// CREATE - Add new additional service
+router.post("/", additionalServiceUpload.single("image"), addAdditionalService)
+
+// READ - Get all additional services
+router.get("/", getAllAdditionalServices)
+
+// READ - Get single additional service by ID
+router.get("/:id", getAdditionalServiceById)
+
+// READ - Get additional services by dealer ID (with optional CC filter)
+router.get("/dealer/:dealerId", getAdditionalServicesByDealerId)
+
+// UPDATE - Update additional service
+router.put("/:id", additionalServiceUpload.single("image"), updateAdditionalService)
+
+// DELETE - Delete additional service
+router.delete("/:id", deleteAdditionalService)
+
+// ADDITIONAL ACTIONS
+// Save selected services for dealer
+router.post("/select-services/save", saveSelectedServices)
+
+/* =====================================================
+   DEPRECATED ROUTES (Keep for backward compatibility)
+===================================================== */
 router.post("/add-service", additionalServiceUpload.single("image"), addAdditionalService)
 router.get("/all-additional-services", getAllAdditionalServices)
 router.get("/single-additional-service/:id", getAdditionalServiceById)
 router.put("/updated-additional-service/:id", additionalServiceUpload.single("image"), updateAdditionalService)
 router.delete("/delete-additional-service/:id", deleteAdditionalService)
-router.get("/:dealerId", getAdditionalServicesByDealerId)
-// Save selected services
 router.post("/select-services", saveSelectedServices)
 
 module.exports = router
