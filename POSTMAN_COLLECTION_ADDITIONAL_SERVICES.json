@@ -1,0 +1,419 @@
+{
+  "info": {
+    "name": "Additional Services API",
+    "description": "Complete API collection for Additional Services management - Base Service Pattern",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "additional-services-collection",
+    "version": "1.0.0"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{dealer_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "1. CREATE ADDITIONAL SERVICE",
+      "item": [
+        {
+          "name": "Create New Additional Service",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "multipart/form-data",
+                "type": "text"
+              },
+              {
+                "key": "token",
+                "value": "{{dealer_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Periodic Service",
+                  "type": "text",
+                  "description": "Service name (required)"
+                },
+                {
+                  "key": "description",
+                  "value": "Complete periodic service package",
+                  "type": "text",
+                  "description": "Service description (optional)"
+                },
+                {
+                  "key": "dealer_id",
+                  "value": "6731f8a9c5e8d6a4b3c9e1f2",
+                  "type": "text",
+                  "description": "Dealer ID (required)"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Service image (required)"
+                },
+                {
+                  "key": "bikes",
+                  "value": "[{\"cc\": 100, \"price\": 1500}, {\"cc\": 150, \"price\": 2000}]",
+                  "type": "text",
+                  "description": "JSON array of bike CC and prices (optional)"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/additional-service",
+              "host": ["{{base_url}}"],
+              "path": ["additional-service"]
+            },
+            "description": "Create a new additional service for a dealer. Requires authentication token."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. READ ADDITIONAL SERVICES",
+      "item": [
+        {
+          "name": "Get All Additional Services",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{dealer_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/additional-service",
+              "host": ["{{base_url}}"],
+              "path": ["additional-service"]
+            },
+            "description": "Retrieve all additional services"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Additional Service",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{dealer_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/additional-service/{{service_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["additional-service", "{{service_id}}"]
+            },
+            "description": "Get details of a specific additional service by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Services by Dealer ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{dealer_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/additional-service/dealer/{{dealer_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["additional-service", "dealer", "{{dealer_id}}"]
+            },
+            "description": "Get all additional services for a specific dealer"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Services by Dealer with CC Filter",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{dealer_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/additional-service/dealer/{{dealer_id}}?cc=100",
+              "host": ["{{base_url}}"],
+              "path": ["additional-service", "dealer", "{{dealer_id}}"],
+              "query": [
+                {
+                  "key": "cc",
+                  "value": "100",
+                  "description": "Filter by CC (optional)"
+                }
+              ]
+            },
+            "description": "Get services for a dealer filtered by bike CC"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. UPDATE ADDITIONAL SERVICE",
+      "item": [
+        {
+          "name": "Update Additional Service",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "multipart/form-data",
+                "type": "text"
+              },
+              {
+                "key": "token",
+                "value": "{{dealer_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Updated Service Name",
+                  "type": "text",
+                  "description": "Updated service name (optional)"
+                },
+                {
+                  "key": "description",
+                  "value": "Updated description",
+                  "type": "text",
+                  "description": "Updated service description (optional)"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [],
+                  "description": "New service image (optional)"
+                },
+                {
+                  "key": "bikes",
+                  "value": "[{\"cc\": 100, \"price\": 1800}, {\"cc\": 150, \"price\": 2200}]",
+                  "type": "text",
+                  "description": "Updated bikes pricing (optional)"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/additional-service/{{service_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["additional-service", "{{service_id}}"]
+            },
+            "description": "Update an existing additional service"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "4. DELETE ADDITIONAL SERVICE",
+      "item": [
+        {
+          "name": "Delete Additional Service",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{dealer_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/additional-service/{{service_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["additional-service", "{{service_id}}"]
+            },
+            "description": "Delete an additional service"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "5. SAVE SELECTED SERVICES",
+      "item": [
+        {
+          "name": "Save Selected Services for Dealer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "token",
+                "value": "{{dealer_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dealer_id\": \"6731f8a9c5e8d6a4b3c9e1f2\",\n  \"selected_services\": [\n    \"6731f8a9c5e8d6a4b3c9e1f3\",\n    \"6731f8a9c5e8d6a4b3c9e1f4\"\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/additional-service/select-services/save",
+              "host": ["{{base_url}}"],
+              "path": ["additional-service", "select-services", "save"]
+            },
+            "description": "Save/select multiple services for a dealer"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "6. DEPRECATED ENDPOINTS (Backward Compatibility)",
+      "item": [
+        {
+          "name": "Add Service (Deprecated)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "multipart/form-data",
+                "type": "text"
+              },
+              {
+                "key": "token",
+                "value": "{{dealer_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Service Name",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Service Description",
+                  "type": "text"
+                },
+                {
+                  "key": "dealer_id",
+                  "value": "6731f8a9c5e8d6a4b3c9e1f2",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "bikes",
+                  "value": "[{\"cc\": 100, \"price\": 1500}]",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/additional-service/add-service",
+              "host": ["{{base_url}}"],
+              "path": ["additional-service", "add-service"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Services (Deprecated)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{dealer_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/additional-service/all-additional-services",
+              "host": ["{{base_url}}"],
+              "path": ["additional-service", "all-additional-services"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Service (Deprecated)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{dealer_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/additional-service/single-additional-service/{{service_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["additional-service", "single-additional-service", "{{service_id}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000/api",
+      "type": "string",
+      "description": "Base URL for the API"
+    },
+    {
+      "key": "dealer_token",
+      "value": "your_dealer_jwt_token_here",
+      "type": "string",
+      "description": "JWT token for dealer authentication"
+    },
+    {
+      "key": "dealer_id",
+      "value": "6731f8a9c5e8d6a4b3c9e1f2",
+      "type": "string",
+      "description": "Dealer ID (MongoDB ObjectId)"
+    },
+    {
+      "key": "service_id",
+      "value": "6731f8a9c5e8d6a4b3c9e1f3",
+      "type": "string",
+      "description": "Service ID (MongoDB ObjectId)"
+    }
+  ]
+}
