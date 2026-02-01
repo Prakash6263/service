@@ -1,0 +1,405 @@
+{
+  "info": {
+    "name": "Additional Services API",
+    "description": "Complete API collection for Additional Services management including Base Additional Services and dealer-specific services",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Base Additional Services (Admin Only)",
+      "item": [
+        {
+          "name": "1. Create Base Additional Service",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Free Maintenance Package\",\n  \"image\": \"uploads/base-additional-services/maintenance-package.jpg\",\n  \"description\": \"Complimentary service and maintenance for first year\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/base-additional-service/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "base-additional-service",
+                ""
+              ]
+            },
+            "description": "Create a new base additional service that will be assigned to dealers"
+          },
+          "response": []
+        },
+        {
+          "name": "2. Get All Base Additional Services",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/base-additional-service/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "base-additional-service",
+                ""
+              ]
+            },
+            "description": "Retrieve all available base additional services"
+          },
+          "response": []
+        },
+        {
+          "name": "3. Get Single Base Additional Service",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/base-additional-service/{{base_service_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "base-additional-service",
+                "{{base_service_id}}"
+              ]
+            },
+            "description": "Retrieve a specific base additional service by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "4. Update Base Additional Service",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Free Maintenance Package (Updated)\",\n  \"description\": \"Complimentary service and maintenance for first 2 years\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/base-additional-service/{{base_service_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "base-additional-service",
+                "{{base_service_id}}"
+              ]
+            },
+            "description": "Update an existing base additional service"
+          },
+          "response": []
+        },
+        {
+          "name": "5. Delete Base Additional Service",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/base-additional-service/{{base_service_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "base-additional-service",
+                "{{base_service_id}}"
+              ]
+            },
+            "description": "Delete a base additional service (will fail if in use by dealers)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Additional Services (Admin & Dealer)",
+      "item": [
+        {
+          "name": "1. Create Additional Service (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"base_additional_service_id\": \"{{base_service_id}}\",\n  \"dealer_id\": \"{{dealer_id}}\",\n  \"description\": \"Free maintenance for Hero Splendor and Hero Passion\",\n  \"bikes\": [\n    {\n      \"cc\": 100,\n      \"price\": 5000\n    },\n    {\n      \"cc\": 125,\n      \"price\": 6000\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/additional-service/admin/additional-services",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "additional-service",
+                "admin",
+                "additional-services"
+              ]
+            },
+            "description": "Create a new additional service instance for a specific dealer with bike CC and pricing"
+          },
+          "response": []
+        },
+        {
+          "name": "2. Get All Additional Services (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/additional-service/admin/additional-services",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "additional-service",
+                "admin",
+                "additional-services"
+              ]
+            },
+            "description": "Retrieve all additional services across all dealers (admin view)"
+          },
+          "response": []
+        },
+        {
+          "name": "3. Get Single Additional Service (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/additional-service/admin/additional-services/{{service_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "additional-service",
+                "admin",
+                "additional-services",
+                "{{service_id}}"
+              ]
+            },
+            "description": "Retrieve a specific additional service by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "4. Update Additional Service (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated free maintenance for Hero models\",\n  \"bikes\": [\n    {\n      \"cc\": 100,\n      \"price\": 5500\n    },\n    {\n      \"cc\": 125,\n      \"price\": 6500\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/additional-service/admin/additional-services/{{service_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "additional-service",
+                "admin",
+                "additional-services",
+                "{{service_id}}"
+              ]
+            },
+            "description": "Update an existing additional service (description, bikes pricing, etc.)"
+          },
+          "response": []
+        },
+        {
+          "name": "5. Delete Additional Service (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/additional-service/admin/additional-services/{{service_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "additional-service",
+                "admin",
+                "additional-services",
+                "{{service_id}}"
+              ]
+            },
+            "description": "Delete an additional service"
+          },
+          "response": []
+        },
+        {
+          "name": "6. Get Dealer's Additional Services",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{dealer_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/additional-service/dealer/additional-services/{{dealer_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "additional-service",
+                "dealer",
+                "additional-services",
+                "{{dealer_id}}"
+              ]
+            },
+            "description": "Get all additional services assigned to a specific dealer"
+          },
+          "response": []
+        },
+        {
+          "name": "7. Get Dealer's Services by Bike CC",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{dealer_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/additional-service/dealer/additional-services/{{dealer_id}}?cc=100",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "additional-service",
+                "dealer",
+                "additional-services",
+                "{{dealer_id}}"
+              ],
+              "query": [
+                {
+                  "key": "cc",
+                  "value": "100"
+                }
+              ]
+            },
+            "description": "Get additional services for a dealer filtered by bike CC"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Setup Variables",
+      "item": [
+        {
+          "name": "Set Base URL",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}"
+            },
+            "description": "Use this to set your base URL in the environment. Example: http://localhost:5000/api"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "your_admin_jwt_token_here",
+      "type": "string"
+    },
+    {
+      "key": "dealer_token",
+      "value": "your_dealer_jwt_token_here",
+      "type": "string"
+    },
+    {
+      "key": "base_service_id",
+      "value": "paste_base_service_id_here",
+      "type": "string"
+    },
+    {
+      "key": "dealer_id",
+      "value": "paste_dealer_id_here",
+      "type": "string"
+    },
+    {
+      "key": "service_id",
+      "value": "paste_service_id_here",
+      "type": "string"
+    }
+  ]
+}

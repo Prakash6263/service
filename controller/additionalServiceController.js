@@ -1,8 +1,6 @@
 const AdditionalService = require("../models/additionalServiceSchema");
 const BaseAdditionalService = require("../models/baseAdditionalServiceSchema");
 const mongoose = require("mongoose");
-const AdditionalOptions = require("../models/additionalOptionsSchema"); // Declare AdditionalOptions
-const Dealer = require("../models/dealerSchema"); // Declare Dealer
 
 // 1. Add Additional Service (Admin Only)
 const addAdditionalService = async (req, res) => {
@@ -385,7 +383,7 @@ const saveSelectedServices = async (req, res) => {
         }
 
         // Check if services exist
-        const validServices = await AdditionalOptions.find({
+        const validServices = await AdditionalService.find({
             _id: { $in: selected_services }
         });
 
@@ -400,26 +398,11 @@ const saveSelectedServices = async (req, res) => {
             });
         }
 
-        // Update dealer with selected services
-        const updatedDealer = await Dealer.findByIdAndUpdate(
-            dealer_id,
-            { $addToSet: { services: { $each: selected_services } } },
-            { new: true }
-        );
-
-        if (!updatedDealer) {
-            return res.status(404).json({
-                success: false,
-                message: "Dealer not found"
-            });
-        }
-
         res.status(200).json({
             success: true,
             message: "Services saved successfully",
             data: {
-                dealer: updatedDealer.name,
-                selectedServices: validServices.map(s => s.name)
+                selectedServices: validServices
             }
         });
 
