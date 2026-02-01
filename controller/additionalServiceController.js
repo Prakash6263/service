@@ -1,16 +1,27 @@
 const AdditionalService = require("../models/additionalServiceSchema");
+const BaseAdditionalService = require("../models/baseAdditionalServiceSchema");
 const mongoose = require("mongoose");
+const AdditionalOptions = require("../models/additionalOptionsSchema"); // Declare AdditionalOptions
+const Dealer = require("../models/dealerSchema"); // Declare Dealer
 
-// 1. Add Additional Service
+// 1. Add Additional Service (Admin Only)
 const addAdditionalService = async (req, res) => {
     try {
-        const { name, description, dealer_id, bikes } = req.body;
+        const { base_additional_service_id, description, dealer_id, bikes } = req.body;
 
         // Validate required fields
-        if (!name || !dealer_id) {
+        if (!base_additional_service_id || !dealer_id) {
             return res.status(400).json({
                 status: 400,
-                message: "Name and dealer_id are required"
+                message: "base_additional_service_id and dealer_id are required"
+            });
+        }
+
+        // Validate base_additional_service_id format
+        if (!mongoose.Types.ObjectId.isValid(base_additional_service_id)) {
+            return res.status(400).json({
+                status: 400,
+                message: "Invalid base additional service ID format"
             });
         }
 
@@ -19,6 +30,15 @@ const addAdditionalService = async (req, res) => {
             return res.status(400).json({
                 status: 400,
                 message: "Invalid dealer ID format"
+            });
+        }
+
+        // Check if base additional service exists
+        const baseService = await BaseAdditionalService.findById(base_additional_service_id);
+        if (!baseService) {
+            return res.status(404).json({
+                status: 404,
+                message: "Base additional service not found"
             });
         }
 
@@ -35,24 +55,43 @@ const addAdditionalService = async (req, res) => {
             }
         }
 
-        // Build service data with image path
+        // Validate bikes array is not empty
+        if (parsedBikes.length === 0) {
+            return res.status(400).json({
+                status: 400,
+                message: "At least one bike with CC and price is required"
+            });
+        }
+
+        // Validate each bike entry
+        for (let bike of parsedBikes) {
+            if (!bike.cc || bike.cc <= 0) {
+                return res.status(400).json({
+                    status: 400,
+                    message: "Each bike must have CC > 0"
+                });
+            }
+            if (bike.price === undefined || bike.price < 0) {
+                return res.status(400).json({
+                    status: 400,
+                    message: "Each bike must have a valid price >= 0"
+                });
+            }
+        }
+
+        // Build service data
         const serviceData = {
-            name,
-            description,
-            dealer_id
+            base_additional_service_id,
+            description: description || "",
+            dealer_id,
+            bikes: parsedBikes
         };
 
-        // Add image with uploads/additional-services folder path
-        if (req.file) {
-            serviceData.image = `uploads/additional-services/${req.file.filename}`;
-        }
-
-        // Add bikes if provided
-        if (parsedBikes.length > 0) {
-            serviceData.bikes = parsedBikes;
-        }
-
         const newService = await AdditionalService.create(serviceData);
+
+        // Populate base service details
+        await newService.populate("base_additional_service_id", "name image");
+        await newService.populate("dealer_id", "shopName");
 
         res.status(201).json({
             status: 200,
@@ -68,10 +107,11 @@ const addAdditionalService = async (req, res) => {
     }
 };
 
-// 2. Get All Additional Services
+// 2. Get All Additional Services (Admin Only)
 const getAllAdditionalServices = async (req, res) => {
     try {
         const services = await AdditionalService.find()
+            .populate("base_additional_service_id", "name image")
             .populate("dealer_id", "shopName email")
             .sort({ id: -1 });
 
@@ -89,7 +129,7 @@ const getAllAdditionalServices = async (req, res) => {
     }
 };
 
-// 3. Get Single Additional Service
+// 3. Get Single Additional Service (Admin Only)
 const getAdditionalServiceById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -101,7 +141,9 @@ const getAdditionalServiceById = async (req, res) => {
             });
         }
 
-        const service = await AdditionalService.findById(id);
+        const service = await AdditionalService.findById(id)
+            .populate("base_additional_service_id", "name image")
+            .populate("dealer_id", "shopName email");
 
         if (!service) {
             return res.status(404).json({
@@ -124,11 +166,11 @@ const getAdditionalServiceById = async (req, res) => {
     }
 };
 
-// 4. Update Additional Service
+// 4. Update Additional Service (Admin Only)
 const updateAdditionalService = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, description, bikes } = req.body;
+        const { base_additional_service_id, description, dealer_id, bikes } = req.body;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({
@@ -138,18 +180,69 @@ const updateAdditionalService = async (req, res) => {
         }
 
         const updateData = {};
-        if (name) updateData.name = name;
-        if (description) updateData.description = description;
 
-        // Add image with uploads/additional-services folder path
-        if (req.file) {
-            updateData.image = `uploads/additional-services/${req.file.filename}`;
+        // Validate and update base_additional_service_id if provided
+        if (base_additional_service_id) {
+            if (!mongoose.Types.ObjectId.isValid(base_additional_service_id)) {
+                return res.status(400).json({
+                    status: 400,
+                    message: "Invalid base additional service ID format"
+                });
+            }
+
+            const baseService = await BaseAdditionalService.findById(base_additional_service_id);
+            if (!baseService) {
+                return res.status(404).json({
+                    status: 404,
+                    message: "Base additional service not found"
+                });
+            }
+
+            updateData.base_additional_service_id = base_additional_service_id;
         }
 
-        // Parse and add bikes if provided
+        // Validate and update dealer_id if provided
+        if (dealer_id) {
+            if (!mongoose.Types.ObjectId.isValid(dealer_id)) {
+                return res.status(400).json({
+                    status: 400,
+                    message: "Invalid dealer ID format"
+                });
+            }
+            updateData.dealer_id = dealer_id;
+        }
+
+        if (description) updateData.description = description;
+
+        // Parse and validate bikes if provided
         if (bikes) {
             try {
-                updateData.bikes = typeof bikes === 'string' ? JSON.parse(bikes) : bikes;
+                let parsedBikes = typeof bikes === 'string' ? JSON.parse(bikes) : bikes;
+
+                if (parsedBikes.length === 0) {
+                    return res.status(400).json({
+                        status: 400,
+                        message: "At least one bike with CC and price is required"
+                    });
+                }
+
+                // Validate each bike entry
+                for (let bike of parsedBikes) {
+                    if (!bike.cc || bike.cc <= 0) {
+                        return res.status(400).json({
+                            status: 400,
+                            message: "Each bike must have CC > 0"
+                        });
+                    }
+                    if (bike.price === undefined || bike.price < 0) {
+                        return res.status(400).json({
+                            status: 400,
+                            message: "Each bike must have a valid price >= 0"
+                        });
+                    }
+                }
+
+                updateData.bikes = parsedBikes;
             } catch (error) {
                 return res.status(400).json({
                     status: 400,
@@ -162,7 +255,9 @@ const updateAdditionalService = async (req, res) => {
             id,
             updateData,
             { new: true }
-        );
+        )
+            .populate("base_additional_service_id", "name image")
+            .populate("dealer_id", "shopName email");
 
         if (!updatedService) {
             return res.status(404).json({
@@ -219,8 +314,8 @@ const deleteAdditionalService = async (req, res) => {
     }
 };
 
-// 6. Get Additional Services by Dealer ID
-// Get Additional Services by Dealer ID with optional CC filter
+// 6. Get Additional Services by Dealer ID (Dealer View)
+// Get Additional Services assigned to the dealer
 const getAdditionalServicesByDealerId = async (req, res) => {
     try {
         const { dealerId } = req.params;
@@ -242,6 +337,7 @@ const getAdditionalServicesByDealerId = async (req, res) => {
         }
 
         const services = await AdditionalService.find(query)
+            .populate("base_additional_service_id", "name image")
             .populate("dealer_id", "shopName email")
             .sort({ id: -1 });
 

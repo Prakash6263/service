@@ -1,8 +1,5 @@
 const express = require("express")
 const router = express.Router()
-const multer = require("multer")
-const path = require("path")
-const fs = require("fs")
 const {
   addAdditionalService,
   getAllAdditionalServices,
@@ -14,29 +11,38 @@ const {
 } = require("../controller/additionalServiceController")
 
 /* =====================================================
-   ADDITIONAL SERVICES → uploads/additional-services
+   ADMIN ROUTES
 ===================================================== */
-const additionalServiceDir = path.join(__dirname, "../uploads/additional-services")
-if (!fs.existsSync(additionalServiceDir)) {
-  fs.mkdirSync(additionalServiceDir, { recursive: true })
-}
+// Admin: Create new additional service
+router.post("/admin/additional-services", addAdditionalService)
 
-const additionalServiceUpload = multer({
-  storage: multer.diskStorage({
-    destination: additionalServiceDir,
-    filename: (req, file, cb) => {
-      cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`)
-    },
-  }),
-})
+// Admin: Get all additional services
+router.get("/admin/additional-services", getAllAdditionalServices)
 
-router.post("/add-service", additionalServiceUpload.single("image"), addAdditionalService)
+// Admin: Get single additional service by ID
+router.get("/admin/additional-services/:id", getAdditionalServiceById)
+
+// Admin: Update additional service
+router.put("/admin/additional-services/:id", updateAdditionalService)
+
+// Admin: Delete additional service
+router.delete("/admin/additional-services/:id", deleteAdditionalService)
+
+/* =====================================================
+   DEALER ROUTES
+===================================================== */
+// Dealer: Get services assigned to dealer
+router.get("/dealer/additional-services/:dealerId", getAdditionalServicesByDealerId)
+
+/* =====================================================
+   LEGACY ROUTES (kept for backward compatibility)
+===================================================== */
+router.post("/add-service", addAdditionalService)
 router.get("/all-additional-services", getAllAdditionalServices)
 router.get("/single-additional-service/:id", getAdditionalServiceById)
-router.put("/updated-additional-service/:id", additionalServiceUpload.single("image"), updateAdditionalService)
+router.put("/updated-additional-service/:id", updateAdditionalService)
 router.delete("/delete-additional-service/:id", deleteAdditionalService)
 router.get("/:dealerId", getAdditionalServicesByDealerId)
-// Save selected services
 router.post("/select-services", saveSelectedServices)
 
 module.exports = router
