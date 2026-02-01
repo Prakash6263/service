@@ -94,24 +94,69 @@ async function deleteService(req, res) {
   }
 }
 
+/**
+ * UPDATED: Fetch admin services for a specific dealer
+ * Now queries adminservices model where dealer_id is in the dealers array
+ * GET /service/dealer/:dealer_id
+ */
 async function getServicesByDealer(req, res) {
   try {
     const { dealer_id } = req.params
 
-    if (!dealer_id) {
-      return res.status(200).send({ status: 400, message: "Dealer ID is required!" })
+    if (!dealer_id || !mongoose.Types.ObjectId.isValid(dealer_id)) {
+      return res.status(200).send({
+        status: 400,
+        message: "Valid dealer ID is required!",
+      })
     }
 
-    const services = await service.find({ dealer_id }).populate("dealer_id", "name email")
+    console.log("[v0] Fetching admin services for dealer:", dealer_id)
+
+    // Query adminservices where this dealer is in the dealers array
+    const services = await adminservices
+      .find({
+        dealers: dealer_id,
+      })
+      .populate("base_service_id", "name image")
+      .populate("companies", "name")
+      .populate({
+        path: "bikes.model_id",
+        select: "model_name",
+      })
+      .populate({
+        path: "bikes.variant_id",
+        select: "variant_name",
+      })
+      .sort({ createdAt: -1 })
+
+    console.log("[v0] Found services:", services.length)
+
+    // Format response with service details and pricing
+    const formattedServices = services.map((service) => ({
+      _id: service._id,
+      serviceId: service.serviceId || null,
+      name: service.base_service_id?.name,
+      image: service.base_service_id?.image,
+      companies: service.companies,
+      bikes: service.bikes,
+      createdAt: service.createdAt,
+      updatedAt: service.updatedAt,
+    }))
 
     return res.status(200).send({
       status: 200,
-      message: services.length > 0 ? "Success" : "No services found for this dealer",
-      data: services,
+      message:
+        formattedServices.length > 0
+          ? "Success"
+          : "No services found for this dealer",
+      data: formattedServices,
     })
   } catch (error) {
     console.error("Error fetching services by dealer:", error)
-    return res.status(200).send({ status: 500, message: "Internal Server Error" })
+    return res.status(200).send({
+      status: 500,
+      message: "Internal Server Error",
+    })
   }
 }
 
@@ -687,6 +732,65 @@ async function getDealerServices(req, res) {
   }
 }
 
+/**
+ * NEW: Admin can fetch all services for a specific dealer using dealer_id parameter
+ * This endpoint is used in the admin panel to view dealer's services
+ * GET /admin/services/by-dealer/:dealer_id
+ */
+async function getAdminServicesByDealer(req, res) {
+  try {
+    const { dealer_id } = req.params
+
+    if (!dealer_id || !mongoose.Types.ObjectId.isValid(dealer_id)) {
+      return res.status(400).json({
+        status: false,
+        message: "Valid dealer ID is required",
+      })
+    }
+
+    // Fetch all AdminServices where this dealer is included
+    const services = await adminservices
+      .find({
+        dealers: dealer_id,
+      })
+      .populate("base_service_id", "name image")
+      .populate("companies", "name")
+      .populate({
+        path: "bikes.model_id",
+        select: "model_name",
+      })
+      .populate({
+        path: "bikes.variant_id",
+        select: "variant_name",
+      })
+      .sort({ createdAt: -1 })
+
+    // Format response with service details and pricing
+    const formattedServices = services.map((service) => ({
+      _id: service._id,
+      serviceId: service.serviceId || null,
+      name: service.base_service_id?.name,
+      image: service.base_service_id?.image,
+      companies: service.companies,
+      bikes: service.bikes,
+      createdAt: service.createdAt,
+      updatedAt: service.updatedAt,
+    }))
+
+    return res.status(200).json({
+      status: true,
+      message: formattedServices.length > 0 ? "Services fetched successfully" : "No services found for this dealer",
+      data: formattedServices,
+    })
+  } catch (error) {
+    console.error("Error fetching admin services by dealer:", error)
+    return res.status(500).json({
+      status: false,
+      message: "Internal Server Error",
+    })
+  }
+}
+
 async function additionalservicelist(req, res) {
   try {
     const services = await additionalService.find().populate("dealer_id", "name email").sort({ id: -1 })
@@ -1223,4 +1327,5 @@ module.exports = {
   updateAdminService,
   deleteAdminService,
   getDealerServices,
+  getAdminServicesByDealer,
 }

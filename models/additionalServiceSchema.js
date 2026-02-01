@@ -49,6 +49,11 @@ const additionalServiceSchema = new mongoose.Schema(
   {
     id: { type: Number, unique: true, index: true },
 
+    serviceId: {
+      type: String,
+      unique: true,
+    },
+
     name: { type: String, required: true, trim: true },
     image: { type: String, default: null },
     description: { type: String, default: "" },
@@ -71,6 +76,30 @@ const additionalServiceSchema = new mongoose.Schema(
 additionalServiceSchema.plugin(AutoIncrement, {
   id: "additional_services_seq",
   inc_field: "id",
+});
+
+// Generate short ID (serviceId) in format MKBDASVC-###
+additionalServiceSchema.pre("validate", async function (next) {
+  if (!this.serviceId) {
+    const regex = /^MKBDASVC-(\d+)$/;
+
+    const lastService = await this.constructor
+      .findOne({ serviceId: { $regex: regex } })
+      .sort({ serviceId: -1 })
+      .exec();
+
+    let maxNumber = 0;
+    if (lastService) {
+      const match = lastService.serviceId.match(regex);
+      if (match && match[1]) {
+        maxNumber = Number.parseInt(match[1], 10);
+      }
+    }
+
+    const nextNumber = (maxNumber + 1).toString().padStart(3, "0");
+    this.serviceId = `MKBDASVC-${nextNumber}`;
+  }
+  next();
 });
 
 module.exports = mongoose.model("additionalServices", additionalServiceSchema);

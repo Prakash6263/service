@@ -2,6 +2,7 @@ const express = require("express")
 const router = express.Router()
 const multer = require("multer")
 const path = require("path")
+const fs = require("fs")
 const {
   addAdditionalService,
   getAllAdditionalServices,
@@ -12,37 +13,27 @@ const {
   saveSelectedServices,
 } = require("../controller/additionalServiceController")
 
-// Configure Multer directly in the router file
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "../public/uploads/additional-services"))
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9)
-    cb(null, "additional-service-" + uniqueSuffix + path.extname(file.originalname))
-  },
-})
-
-const fileFilter = (req, file, cb) => {
-  const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif"]
-  if (allowedTypes.includes(file.mimetype)) {
-    cb(null, true)
-  } else {
-    cb(new Error("Only JPG, JPEG, PNG & GIF files are allowed"), false)
-  }
+/* =====================================================
+   ADDITIONAL SERVICES → uploads/additional-services
+===================================================== */
+const additionalServiceDir = path.join(__dirname, "../uploads/additional-services")
+if (!fs.existsSync(additionalServiceDir)) {
+  fs.mkdirSync(additionalServiceDir, { recursive: true })
 }
 
-const upload = multer({
-  storage: storage,
-  fileFilter: fileFilter,
+const additionalServiceUpload = multer({
+  storage: multer.diskStorage({
+    destination: additionalServiceDir,
+    filename: (req, file, cb) => {
+      cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`)
+    },
+  }),
 })
 
-router.post("/add-service", upload.single("image"), (req, res) => {
-  console.log("cndskdjsdjksd")
-})
+router.post("/add-service", additionalServiceUpload.single("image"), addAdditionalService)
 router.get("/all-additional-services", getAllAdditionalServices)
 router.get("/single-additional-service/:id", getAdditionalServiceById)
-router.put("/updated-additional-service/:id", upload.single("image"), updateAdditionalService)
+router.put("/updated-additional-service/:id", additionalServiceUpload.single("image"), updateAdditionalService)
 router.delete("/delete-additional-service/:id", deleteAdditionalService)
 router.get("/:dealerId", getAdditionalServicesByDealerId)
 // Save selected services

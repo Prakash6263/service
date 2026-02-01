@@ -4,21 +4,61 @@ const mongoose = require("mongoose");
 // 1. Add Additional Service
 const addAdditionalService = async (req, res) => {
     try {
-        console.log("Request body:");
-        // const { name, description } = req.body;
-        // const image = req.file?.filename || "";
+        const { name, description, dealer_id, bikes } = req.body;
 
-        // const newService = await AdditionalService.create({
-        //   name,
-        //   image,
-        //   description
-        // });
+        // Validate required fields
+        if (!name || !dealer_id) {
+            return res.status(400).json({
+                status: 400,
+                message: "Name and dealer_id are required"
+            });
+        }
 
-        // res.status(201).json({
-        //   status: 200,
-        //   message: "Additional service added successfully",
-        //   data: newService
-        // });
+        // Validate dealer_id format
+        if (!mongoose.Types.ObjectId.isValid(dealer_id)) {
+            return res.status(400).json({
+                status: 400,
+                message: "Invalid dealer ID format"
+            });
+        }
+
+        // Parse bikes if provided
+        let parsedBikes = [];
+        if (bikes) {
+            try {
+                parsedBikes = typeof bikes === 'string' ? JSON.parse(bikes) : bikes;
+            } catch (error) {
+                return res.status(400).json({
+                    status: 400,
+                    message: "Invalid bikes data format"
+                });
+            }
+        }
+
+        // Build service data with image path
+        const serviceData = {
+            name,
+            description,
+            dealer_id
+        };
+
+        // Add image with uploads/additional-services folder path
+        if (req.file) {
+            serviceData.image = `uploads/additional-services/${req.file.filename}`;
+        }
+
+        // Add bikes if provided
+        if (parsedBikes.length > 0) {
+            serviceData.bikes = parsedBikes;
+        }
+
+        const newService = await AdditionalService.create(serviceData);
+
+        res.status(201).json({
+            status: 200,
+            message: "Additional service added successfully",
+            data: newService
+        });
     } catch (error) {
         res.status(500).json({
             status: 500,
@@ -32,8 +72,8 @@ const addAdditionalService = async (req, res) => {
 const getAllAdditionalServices = async (req, res) => {
     try {
         const services = await AdditionalService.find()
-        .populate("dealer_id", "shopName email")
-        .sort({ id: -1 })
+            .populate("dealer_id", "shopName email")
+            .sort({ id: -1 });
 
         res.status(200).json({
             status: 200,
@@ -88,8 +128,7 @@ const getAdditionalServiceById = async (req, res) => {
 const updateAdditionalService = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, description } = req.body;
-        const image = req.file?.filename;
+        const { name, description, bikes } = req.body;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({
@@ -98,8 +137,26 @@ const updateAdditionalService = async (req, res) => {
             });
         }
 
-        const updateData = { name, description };
-        if (image) updateData.image = image;
+        const updateData = {};
+        if (name) updateData.name = name;
+        if (description) updateData.description = description;
+
+        // Add image with uploads/additional-services folder path
+        if (req.file) {
+            updateData.image = `uploads/additional-services/${req.file.filename}`;
+        }
+
+        // Parse and add bikes if provided
+        if (bikes) {
+            try {
+                updateData.bikes = typeof bikes === 'string' ? JSON.parse(bikes) : bikes;
+            } catch (error) {
+                return res.status(400).json({
+                    status: 400,
+                    message: "Invalid bikes data format"
+                });
+            }
+        }
 
         const updatedService = await AdditionalService.findByIdAndUpdate(
             id,
@@ -178,7 +235,7 @@ const getAdditionalServicesByDealerId = async (req, res) => {
 
         // Build the query object
         const query = { dealer_id: dealerId };
-        
+
         // Add CC filter if provided
         if (cc) {
             query['bikes.cc'] = Number(cc);
@@ -212,71 +269,71 @@ const getAdditionalServicesByDealerId = async (req, res) => {
 };
 
 const saveSelectedServices = async (req, res) => {
-  try {
-    const { dealer_id, selected_services } = req.body;
+    try {
+        const { dealer_id, selected_services } = req.body;
 
-    // Validate dealer_id
-    if (!mongoose.Types.ObjectId.isValid(dealer_id)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid dealer ID format"
-      });
+        // Validate dealer_id
+        if (!mongoose.Types.ObjectId.isValid(dealer_id)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid dealer ID format"
+            });
+        }
+
+        // Validate selected services
+        if (!Array.isArray(selected_services) || selected_services.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Please select at least one service"
+            });
+        }
+
+        // Check if services exist
+        const validServices = await AdditionalOptions.find({
+            _id: { $in: selected_services }
+        });
+
+        if (validServices.length !== selected_services.length) {
+            const invalidServices = selected_services.filter(
+                id => !validServices.some(s => s._id.equals(id))
+            );
+            return res.status(400).json({
+                success: false,
+                message: "Some selected services are invalid",
+                invalidServices
+            });
+        }
+
+        // Update dealer with selected services
+        const updatedDealer = await Dealer.findByIdAndUpdate(
+            dealer_id,
+            { $addToSet: { services: { $each: selected_services } } },
+            { new: true }
+        );
+
+        if (!updatedDealer) {
+            return res.status(404).json({
+                success: false,
+                message: "Dealer not found"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Services saved successfully",
+            data: {
+                dealer: updatedDealer.name,
+                selectedServices: validServices.map(s => s.name)
+            }
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to save services",
+            error: error.message
+        });
     }
-
-    // Validate selected services
-    if (!Array.isArray(selected_services) || selected_services.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Please select at least one service"
-      });
-    }
-
-    // Check if services exist
-    const validServices = await AdditionalOptions.find({
-      _id: { $in: selected_services }
-    });
-
-    if (validServices.length !== selected_services.length) {
-      const invalidServices = selected_services.filter(
-        id => !validServices.some(s => s._id.equals(id))
-      );
-      return res.status(400).json({
-        success: false,
-        message: "Some selected services are invalid",
-        invalidServices
-      });
-    }
-
-    // Update dealer with selected services
-    const updatedDealer = await Dealer.findByIdAndUpdate(
-      dealer_id,
-      { $addToSet: { services: { $each: selected_services } } },
-      { new: true }
-    );
-
-    if (!updatedDealer) {
-      return res.status(404).json({
-        success: false,
-        message: "Dealer not found"
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: "Services saved successfully",
-      data: {
-        dealer: updatedDealer.name,
-        selectedServices: validServices.map(s => s.name)
-      }
-    });
-
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to save services",
-      error: error.message
-    });
-  }
 };
 
 module.exports = {
