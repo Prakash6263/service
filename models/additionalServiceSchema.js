@@ -39,7 +39,7 @@ const AutoIncrement = require("mongoose-sequence")(mongoose);
 
 const BikePriceSchema = new mongoose.Schema(
   {
-    cc: { type: Number, required: true, min: 0 },
+    cc: { type: Number, required: true, min: 1 },
     price: { type: Number, required: true, min: 0 },
   },
   { _id: false }
@@ -54,8 +54,14 @@ const additionalServiceSchema = new mongoose.Schema(
       unique: true,
     },
 
-    name: { type: String, required: true, trim: true },
-    image: { type: String, default: null },
+    // Reference to BaseAdditionalService
+    base_additional_service_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "BaseAdditionalService",
+      required: true,
+      index: true,
+    },
+
     description: { type: String, default: "" },
 
     bikes: { type: [BikePriceSchema], default: [] },
