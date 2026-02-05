@@ -185,7 +185,7 @@ const dealerModel = new mongoose.Schema(
     services: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "service",
+        ref: "AdminService",
       },
     ],
     gender: {

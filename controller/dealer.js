@@ -11,6 +11,7 @@ const Admin = require('../models/admin_model')
 const Bike = require('../models/bikeCompanyModel')
 const UserBike = require("../models/userBikeModel")
 const servicess = require("../models/service_model")
+const AdminService = require("../models/adminService")
 const fs = require("fs");
 const mongoose = require('mongoose');
 const { log } = require("console");
@@ -1409,25 +1410,37 @@ async function getShopDetails(req, res) {
       return res.status(400).json({ success: false, message: "Invalid Dealer ID format!" });
     }
 
-    // Fetch dealer with populated services
+    // Fetch dealer details
     const dealer = await Vendor.findById(dealer_id)
-      .select("shopName shopImages shopDescription goDigital expertAdvice ourPromise latitude longitude pickupAndDropDescription pickupAndDrop address services")
-      .populate({
-        path: 'services',
-        match: { dealer_id: dealer_id }
-      });
+      .select("shopName shopImages shopDescription goDigital expertAdvice ourPromise latitude longitude pickupAndDropDescription pickupAndDrop address services");
 
     if (!dealer) {
       return res.status(404).json({ success: false, message: "Dealer not found!" });
     }
 
-    // Alternative service fetch if populate isn't working
-    let services = await Service.find({ dealer_id: dealer_id });
+    // Fetch AdminServices that include this dealer in their dealers array
+    let adminServices = await AdminService.find({ dealers: dealer_id })
+      .populate({
+        path: 'base_service_id',
+        select: 'name description image'
+      })
+      .populate({
+        path: 'companies',
+        select: 'name'
+      })
+      .populate({
+        path: 'bikes.model_id',
+        select: 'name'
+      })
+      .populate({
+        path: 'bikes.variant_id',
+        select: 'name'
+      });
 
     // Filter services to only include bikes with matching CC if cc is provided
     if (cc) {
       const ccNumber = parseInt(cc); // Convert query string to number
-      services = services.map(service => {
+      adminServices = adminServices.map(service => {
         const filteredBikes = service.bikes.filter(bike => bike.cc === ccNumber);
         return {
           ...service.toObject(),
@@ -1436,6 +1449,7 @@ async function getShopDetails(req, res) {
       }).filter(service => service.bikes.length > 0); // Remove services with no matching bikes
     }
 
+    // Fetch ratings for the dealer
     const ratings = await Rating.find({ dealer_id: dealer_id });
     const totalRatings = ratings.length;
     const sumRatings = ratings.reduce((acc, curr) => acc + curr.rating, 0);
@@ -1446,7 +1460,7 @@ async function getShopDetails(req, res) {
       message: "Shop details retrieved successfully!",
       data: {
         ...dealer.toObject(),
-        services: services,
+        services: adminServices,
         averageRating
       }
     });
