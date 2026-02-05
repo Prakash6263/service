@@ -174,12 +174,13 @@ async function addAdminService(req, res) {
     }
 
     const data = jwt_decode(req.headers.token)
-    const { user_id } = data
+    const { user_id, user_type } = data
 
-    if (!user_id) {
+    // Check if user is admin (user_type = 1)
+    if (!user_id || user_type != 1) {
       return res.status(401).json({
         status: false,
-        message: "Unauthorized",
+        message: "Unauthorized - Admin access required",
       })
     }
 
@@ -446,12 +447,22 @@ async function getAdminServiceById(req, res) {
  */
 async function updateAdminService(req, res) {
   try {
-    const { id } = req.params
-
-    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({
+    // Auth check
+    if (!req.headers.token) {
+      return res.status(401).json({
         status: false,
-        message: "Valid service ID is required",
+        message: "Token required",
+      })
+    }
+
+    const data = jwt_decode(req.headers.token)
+    const { user_id, user_type } = data
+
+    // Check if user is admin (user_type = 1)
+    if (!user_id || user_type != 1) {
+      return res.status(401).json({
+        status: false,
+        message: "Unauthorized - Admin access required",
       })
     }
 
