@@ -174,10 +174,10 @@ async function addAdminService(req, res) {
     }
 
     const data = jwt_decode(req.headers.token)
-    const { user_id, user_type } = data
+    const { id, role } = data
 
-    // Check if user is admin (user_type = 1)
-    if (!user_id || user_type != 1) {
+    // Check if user is admin
+    if (!id || role !== "Admin") {
       return res.status(401).json({
         status: false,
         message: "Unauthorized - Admin access required",
@@ -456,10 +456,10 @@ async function updateAdminService(req, res) {
     }
 
     const data = jwt_decode(req.headers.token)
-    const { user_id, user_type } = data
+    const { id, role } = data
 
-    // Check if user is admin (user_type = 1)
-    if (!user_id || user_type != 1) {
+    // Check if user is admin
+    if (!id || role !== "Admin") {
       return res.status(401).json({
         status: false,
         message: "Unauthorized - Admin access required",
