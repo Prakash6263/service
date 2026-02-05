@@ -207,33 +207,12 @@ async function addAdminService(req, res) {
       })
     }
 
-    let parsedDealers = []
-    try {
-      parsedDealers = typeof dealer_id === "string" ? JSON.parse(dealer_id) : dealer_id
-    } catch {
+    if (!dealer_id || !mongoose.Types.ObjectId.isValid(dealer_id)) {
       return res.status(400).json({
         status: false,
-        message: "Invalid dealers format",
+        message: "Valid dealer_id is required",
         field: "dealer_id",
       })
-    }
-
-    if (!Array.isArray(parsedDealers) || parsedDealers.length === 0) {
-      return res.status(400).json({
-        status: false,
-        message: "At least one dealer is required",
-        field: "dealer_id",
-      })
-    }
-
-    for (let i = 0; i < parsedDealers.length; i++) {
-      if (!mongoose.Types.ObjectId.isValid(parsedDealers[i])) {
-        return res.status(400).json({
-          status: false,
-          message: `Invalid dealerId at index ${i}`,
-          field: `dealer_id[${i}]`,
-        })
-      }
     }
 
     /* =========================
@@ -332,7 +311,7 @@ async function addAdminService(req, res) {
     const newService = await adminservices.create({
       base_service_id,
       companies: parsedCompanies,
-      dealers: parsedDealers,
+      dealer_id,
       bikes: parsedBikes,
       description: description || "",
     })
@@ -360,27 +339,13 @@ async function listAdminServices(req, res) {
       .find()
       .populate("base_service_id", "name image")
       .populate("companies", "name")
-      .populate("dealers", "shopName id") // populate dealers with shopName and id for dealerId generation
+      .populate("dealer_id", "shopName id")
       .sort({ id: -1 })
-
-    const transformedServices = services.map((service) => {
-      const serviceObj = service.toObject()
-
-      if (serviceObj.dealers && Array.isArray(serviceObj.dealers)) {
-        serviceObj.dealers = serviceObj.dealers.map((dealer) => ({
-          _id: dealer._id,
-          name: dealer.shopName,
-          shortId: dealer.dealerId || `MRBD${dealer.id?.toString().padStart(4, "0")}`, // fallback to dealerId virtual
-        }))
-      }
-
-      return serviceObj
-    })
 
     return res.status(200).json({
       status: true,
-      message: transformedServices.length ? "Admin services fetched successfully" : "No admin services found",
-      data: transformedServices,
+      message: services.length ? "Admin services fetched successfully" : "No admin services found",
+      data: services,
     })
   } catch (error) {
     console.error("Error fetching admin services:", error)
@@ -402,7 +367,7 @@ async function getAdminServiceById(req, res) {
       .findById(id)
       .populate("base_service_id", "name image")
       .populate("companies", "name")
-      .populate("dealers", "shopName id") // populate with shopName and id
+      .populate("dealer_id", "shopName id")
       .populate({
         path: "bikes.model_id",
         select: "model_name",
@@ -419,19 +384,10 @@ async function getAdminServiceById(req, res) {
       })
     }
 
-    const serviceObj = service.toObject()
-    if (serviceObj.dealers && Array.isArray(serviceObj.dealers)) {
-      serviceObj.dealers = serviceObj.dealers.map((dealer) => ({
-        _id: dealer._id,
-        name: dealer.shopName,
-        shortId: dealer.dealerId || `MRBD${dealer.id?.toString().padStart(4, "0")}`,
-      }))
-    }
-
     return res.status(200).json({
       status: true,
       message: "Admin service fetched successfully",
-      data: serviceObj,
+      data: service,
     })
   } catch (error) {
     console.error("Error fetching admin service by id:", error)
@@ -489,33 +445,12 @@ async function updateAdminService(req, res) {
       })
     }
 
-    let parsedDealers = []
-    try {
-      parsedDealers = typeof dealer_id === "string" ? JSON.parse(dealer_id) : dealer_id
-    } catch {
+    if (!dealer_id || !mongoose.Types.ObjectId.isValid(dealer_id)) {
       return res.status(400).json({
         status: false,
-        message: "Invalid dealers format",
+        message: "Valid dealer_id is required",
         field: "dealer_id",
       })
-    }
-
-    if (!Array.isArray(parsedDealers) || parsedDealers.length === 0) {
-      return res.status(400).json({
-        status: false,
-        message: "At least one dealer is required",
-        field: "dealer_id",
-      })
-    }
-
-    for (let i = 0; i < parsedDealers.length; i++) {
-      if (!mongoose.Types.ObjectId.isValid(parsedDealers[i])) {
-        return res.status(400).json({
-          status: false,
-          message: `Invalid dealerId at index ${i}`,
-          field: `dealer_id[${i}]`,
-        })
-      }
     }
 
     /* =========================
@@ -617,7 +552,7 @@ async function updateAdminService(req, res) {
         {
           base_service_id,
           companies: parsedCompanies,
-          dealers: parsedDealers,
+          dealer_id,
           bikes: parsedBikes,
           description: description || "",
         },
@@ -625,7 +560,7 @@ async function updateAdminService(req, res) {
       )
       .populate("base_service_id", "name image")
       .populate("companies", "name")
-      .populate("dealers", "shopName id")
+      .populate("dealer_id", "shopName id")
 
     if (!updatedService) {
       return res.status(404).json({
@@ -634,19 +569,10 @@ async function updateAdminService(req, res) {
       })
     }
 
-    const serviceObj = updatedService.toObject()
-    if (serviceObj.dealers && Array.isArray(serviceObj.dealers)) {
-      serviceObj.dealers = serviceObj.dealers.map((dealer) => ({
-        _id: dealer._id,
-        name: dealer.shopName,
-        shortId: dealer.dealerId || `MRBD${dealer.id?.toString().padStart(4, "0")}`,
-      }))
-    }
-
     return res.status(200).json({
       status: true,
       message: "Admin service updated successfully",
-      data: serviceObj,
+      data: updatedService,
     })
   } catch (error) {
     console.error("Error updating admin service:", error)

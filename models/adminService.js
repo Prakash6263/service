@@ -48,13 +48,11 @@ const adminServiceSchema = new mongoose.Schema(
         },
       },
     ],
-    dealers: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Vendor",
-        required: true,
-      },
-    ],
+    dealer_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Vendor",
+      required: true,
+    },
     description: {
       type: String,
       required: false,
