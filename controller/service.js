@@ -174,7 +174,7 @@ async function addAdminService(req, res) {
     }
 
     const data = jwt_decode(req.headers.token)
-    const user_id = data.user_id || data.id
+    const { user_id } = data
 
     if (!user_id) {
       return res.status(401).json({
@@ -183,7 +183,7 @@ async function addAdminService(req, res) {
       })
     }
 
-    const { base_service_id, companies, bikes, dealer_id } = req.body
+    const { base_service_id, companies, bikes, dealer_id, description } = req.body
 
     /* =========================
        1. Validate base_service_id
@@ -333,6 +333,7 @@ async function addAdminService(req, res) {
       companies: parsedCompanies,
       dealers: parsedDealers,
       bikes: parsedBikes,
+      description: description || "",
     })
 
     return res.status(201).json({
@@ -454,7 +455,7 @@ async function updateAdminService(req, res) {
       })
     }
 
-    const { base_service_id, companies, bikes, dealer_id } = req.body
+    const { base_service_id, companies, bikes, dealer_id, description } = req.body
 
     /* =========================
        1. Validate base_service_id
@@ -607,6 +608,7 @@ async function updateAdminService(req, res) {
           companies: parsedCompanies,
           dealers: parsedDealers,
           bikes: parsedBikes,
+          description: description || "",
         },
         { new: true },
       )
