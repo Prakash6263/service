@@ -200,90 +200,7 @@ async function addAmount(req, res) {
 
 
 
-
 // p end
-
-async function addDealer1(req, res) {
-  // created by  store or vendor
-  try {
-    const data = jwt_decode(req.headers.token);
-    const user_id = data.user_id;
-    const user_type = data.user_type;
-    const type = data.type;
-    if (user_id == null || (user_type != 1 && user_type != 3)) {
-      var response = {
-        status: 200,
-        message: "admin is un-authorised !",
-      };
-      return res.status(200).send(response);
-    }
-    const {
-      dealer_id,
-      name,
-      description,
-      estimated_cost,
-      tax,
-      area,
-      city,
-      dealerId,
-    } = req.body;
-
-    let dealers = await Dealer.findById(dealer_id);
-    if (!dealers) {
-      res.status(200).json({ error: "No Service exists" });
-      return;
-    }
-
-    if (req.file) {
-      const data = {
-        dealer_id: dealer_id,
-        dealerId: dealerId,
-        image: `uploads/dealer-services/${req.file.filename}`,
-        name: name,
-        description: description,
-        area: area,
-        city: city,
-        estimated_cost: estimated_cost,
-        tax: tax,
-        // dealerId,
-      };
-      console.log(data);
-
-      const serviceResponse = await service.create(data);
-      // console.log('serviceResponse', serviceResponse)
-
-      if (serviceResponse) {
-        var response = {
-          status: 200,
-          message: "service added successfully",
-          data: serviceResponse,
-        };
-        return res.status(200).send(response);
-      } else {
-        var response = {
-          status: 201,
-          message: "Unable to add service",
-        };
-        return res.status(201).send(response);
-      }
-    } else {
-      var response = {
-        status: 201,
-        message: "please upload service image",
-      };
-
-      return res.status(201).send(response);
-    }
-  } catch (error) {
-    console.log("error", error);
-    response = {
-      status: 201,
-      message: "Operation was not successful",
-    };
-
-    return res.status(201).send(response);
-  }
-}
 
 async function editDealer(req, res) {
   try {
@@ -544,8 +461,7 @@ async function singledealer(req, res) {
   try {
     // Directly fetch dealer by ID from params (no JWT check)
     const dealerResposnse = await Dealer.findById(req.params.id)
-      .populate("services", "name image")
-    // .populate("BikeModel");
+    // .populate("BikeModel);
 
     if (dealerResposnse) {
       const response = {

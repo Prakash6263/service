@@ -153,7 +153,7 @@ async function getAlltracking(req, res) {
       // const responses = await Tracking.find().populate({path:"service_id",select: ['name', 'image', 'description']}).populate({path:"user_id",select: ['first_name', 'last_name', 'phone','address','city']}).sort({"_id":-1});
       const responses = await Tracking.find(req.query)
       .populate({ path: "booking_id", select: ['id'] })
-      .populate({path:"services"})
+      .populate({path:"services", model: "AdminService"})
       .sort({"_id":-1});
       
       if (responses) {
