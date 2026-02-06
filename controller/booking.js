@@ -54,35 +54,12 @@ async function addbooking(req, res) {
 
     const customer = await customers.findById(user_id);
 
-    // let services = await service.findById(req.params.id)
-    // let services = await service.findById(req.params.id)
     const servicelist = req.body.Servicelist;
     const dealerIdToCheck = servicelist[0]?.dealerId;
-
 
     if (!servicelist.every(service => service.dealerId === dealerIdToCheck)) {
       return res.status(400).json({ message: 'All dealerId should be from the same dealer.' });
     }
-
-
-    // const serviceIds = servicelist.map(service => service._id);
-    // console.log(serviceIds);
-
-    // // Check if any of the services do not exist
-    // const nonExistingServices = await service.find({ _id: { $nin: serviceIds } });
-
-    // if (nonExistingServices.length > 0) {
-    //   console.log(`Services not found for IDs:`);
-    //   const nonExistingServiceIds = nonExistingServices.map(service => service._id.toString());
-    //   res.status(400).json({ error: `Services not found for IDs: ${nonExistingServiceIds.join(', ')}` });
-    //   return;
-    // }
-
-
-    // if (!services) {
-    //   res.status(201).json({ error: "No Service exists" })
-    //   return;
-    // }
 
     const { bullet_points, additonal_options, bike_id, area, city, address, description, estimated_cost, Servicelist, additonal_data_moveable } = req.body;
 
@@ -95,9 +72,6 @@ async function addbooking(req, res) {
     const dealers = await Dealer.find({ id: req.params.id }).exec();
 
     const timeout = 3 * 60 * 1000;
-    // const timeout = 20 * 1000;
-
-    // console.log(dealers);
 
     if (additonal_options) {
       let extra_charges = 0;
@@ -498,67 +472,6 @@ const getuserbookings = async (req, res) => {
 };
 
 
-// const getuserbookings = async (req, res) => {
-//   try {
-//     const { user_id } = req.params;
-
-//     const { user_type } = req.query;
-
-//     if (!user_id) {
-//       return res.status(400).json({
-//         status: 400,
-//         message: "User ID is required in URL (e.g., /api/bookings/123)"
-//       });
-//     }
-
-//     if (!user_type || ![2, 4].includes(Number(user_type))) {
-//       return res.status(400).json({
-//         status: 400,
-//         message: "Valid user_type (2 for dealer, 4 for user) is required in query params"
-//       });
-//     }
-
-//     console.log("user_type", user_type, "user_id", user_id);
-
-//     // Set filter based on user_type
-//     let filter = {};
-//     if (user_type == 2) {
-//       filter = { dealer_id: user_id }; // Dealer's bookings
-//     } else if (user_type == 4) {
-//       filter = { user_id: user_id };   // User's bookings
-//     }
-
-//     const userBookings = await booking.find(filter)
-//       .populate("services")
-//       .populate("dealer_id")
-//       .populate("pickupAndDropId")
-//       .populate("user_id")
-//       .sort({ create_date: -1 });
-
-//     if (!userBookings?.length) {
-//       return res.status(200).json({
-//         status: 200,
-//         success: true,
-//         message: "No bookings found for this user",
-//         data: userBookings
-//       });
-//     }
-
-//     // Return successful response
-//     res.status(200).json({
-//       status: 200,
-//       success: true,
-//       data: userBookings
-//     });
-
-//   } catch (error) {
-//     console.error("Error fetching bookings:", error);
-//     res.status(500).json({
-//       status: 500,
-//       message: "Internal Server Error"
-//     });
-//   }
-// };
 
 async function deletebooking(req, res) {
   try {

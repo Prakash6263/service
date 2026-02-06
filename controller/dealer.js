@@ -457,35 +457,6 @@ async function editDealer(req, res) {
 //   }
 // }
 
-async function singledealer(req, res) {
-  try {
-    // Directly fetch dealer by ID from params (no JWT check)
-    const dealerResposnse = await Dealer.findById(req.params.id)
-    // .populate("BikeModel);
-
-    if (dealerResposnse) {
-      const response = {
-        status: 200,
-        message: "success",
-        data: dealerResposnse,
-      };
-      return res.status(200).send(response);
-    } else {
-      const response = {
-        status: 201,
-        message: "No Dealer Found",
-      };
-      return res.status(201).send(response);
-    }
-  } catch (error) {
-    console.log("error", error);
-    const response = {
-      status: 201,
-      message: "Operation was not successful",
-    };
-    return res.status(201).send(response);
-  }
-}
 
 async function editDealerStatus(req, res) {
   try {
