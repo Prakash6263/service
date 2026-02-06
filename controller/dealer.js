@@ -1,6 +1,5 @@
 require("dotenv").config();
 const Dealer = require("../models/Dealer");
-const Service = require("../models/service_model");
 const Vendor = require("../models/dealerModel");
 const jwt_decode = require("jwt-decode");
 var validation = require("../helper/validation");
@@ -10,7 +9,6 @@ const Role = require('../models/Roles_modal')
 const Admin = require('../models/admin_model')
 const Bike = require('../models/bikeCompanyModel')
 const UserBike = require("../models/userBikeModel")
-const servicess = require("../models/service_model")
 const AdminService = require("../models/adminService")
 const fs = require("fs");
 const mongoose = require('mongoose');

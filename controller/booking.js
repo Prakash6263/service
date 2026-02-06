@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const booking = require("../models/Booking");
 const additionaloptions = require("../models/additionalOptionsModel");
 const AdditionalService = require("../models/additionalServiceSchema");
-const service = require("../models/service_model");
 const bike = require("../models/bikeModel");
 const Tracking = require("../models/Tracking");
 const jwt_decode = require("jwt-decode");

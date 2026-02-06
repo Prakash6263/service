@@ -9,7 +9,6 @@ const offer = require("../models/offer_model")
 const bikeCompanySchema = require("../models/bikeCompanyModel")
 const customerSchema = require("../models/customer_model")
 const bookingSchema = require("../models/Booking")
-const servicesSchema = require("../models/service_model")
 const dealersSchema = require("../models/dealerModel")
 
 var bcrypt = require("bcryptjs")

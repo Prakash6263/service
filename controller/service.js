@@ -1,102 +1,11 @@
-const service = require("../models/service_model")
 const additionalService = require("../models/additionalServiceSchema")
 const jwt_decode = require("jwt-decode")
 const adminservices = require("../models/adminService")
 const mongoose = require("mongoose")
 const BaseService = require("../models/baseService")
 
-async function servicelist(req, res) {
-  try {
-    const services = await service.find().populate("dealer_id", "shopName email").sort({ id: -1 })
-
-    return res.status(200).send({
-      status: 200,
-      message: services.length > 0 ? "Success" : "No services available",
-      data: services,
-    })
-  } catch (error) {
-    console.error("Error fetching services:", error)
-    return res.status(200).send({ status: 500, message: "Internal Server Error" })
-  }
-}
-
-async function singleService(req, res) {
-  try {
-    const { id } = req.params
-    if (!id) {
-      return res.status(200).send({ status: 400, message: "Service ID is required!" })
-    }
-
-    const serviceData = await service.findById(id).populate("dealer_id", "name email")
-    return res.status(200).send({
-      status: 200,
-      message: serviceData ? "Success" : "Service not found!",
-      data: serviceData || {},
-    })
-  } catch (error) {
-    console.error("Error fetching service:", error)
-    return res.status(200).send({ status: 500, message: "Internal Server Error" })
-  }
-}
-
-async function updateService(req, res) {
-  try {
-    const { service_id, name, description, dealer_id, bikes } = req.body
-    if (!service_id || !name || !dealer_id) {
-      return res.status(200).send({ status: 400, message: "Service ID, name, and dealer ID are required!" })
-    }
-
-    let parsedBikes = []
-    if (bikes) {
-      try {
-        parsedBikes = JSON.parse(bikes)
-      } catch (error) {
-        return res.status(200).send({ status: 400, message: "Invalid bikes data format!" })
-      }
-    }
-
-    const updateData = { name, description, dealer_id }
-    if (req.file) {
-      updateData.image = `uploads/services/${req.file.filename}`
-    }
-
-    if (parsedBikes.length > 0) {
-      updateData.bikes = parsedBikes
-    }
-
-    const updatedService = await service.findByIdAndUpdate(service_id, updateData, { new: true })
-    return res.status(200).send({
-      status: 200,
-      message: updatedService ? "Service updated successfully" : "Service not found!",
-      data: updatedService || {},
-    })
-  } catch (error) {
-    console.error("Error updating service:", error)
-    return res.status(200).send({ status: 500, message: "Internal Server Error" })
-  }
-}
-
-async function deleteService(req, res) {
-  try {
-    const { service_id } = req.body
-    if (!service_id) {
-      return res.status(200).send({ status: 400, message: "Service ID is required!" })
-    }
-
-    const deletedService = await service.findByIdAndDelete(service_id)
-    return res.status(200).send({
-      status: 200,
-      message: deletedService ? "Service deleted successfully" : "Service not found!",
-    })
-  } catch (error) {
-    console.error("Error deleting service:", error)
-    return res.status(200).send({ status: 500, message: "Internal Server Error" })
-  }
-}
-
 /**
  * UPDATED: Fetch admin services for a specific dealer
- * Now queries adminservices model where dealer_id is in the dealers array
  * GET /service/dealer/:dealer_id
  */
 async function getServicesByDealer(req, res) {
@@ -110,12 +19,10 @@ async function getServicesByDealer(req, res) {
       })
     }
 
-    console.log("[v0] Fetching admin services for dealer:", dealer_id)
-
-    // Query adminservices where this dealer is in the dealers array
+    // Query adminservices where dealer_id matches
     const services = await adminservices
       .find({
-        dealers: dealer_id,
+        dealer_id: dealer_id,
       })
       .populate("base_service_id", "name image")
       .populate("companies", "name")
@@ -1081,182 +988,10 @@ async function updateAdditionalServiceById(req, res) {
   }
 }
 
-async function getServiceById(req, res) {
-  try {
-    const { id } = req.params
-
-    if (!id) {
-      return res.status(200).send({
-        status: 400,
-        message: "Service ID is required!",
-      })
-    }
-
-    const serviceData = await service.findById(id).populate("dealer_id", "shopName email phone").lean()
-
-    if (!serviceData) {
-      return res.status(200).send({
-        status: 404,
-        message: "Service not found!",
-      })
-    }
-
-    // Format the response data
-    const responseData = {
-      _id: serviceData._id,
-      name: serviceData.name,
-      image: serviceData.image,
-      description: serviceData.description,
-      dealer_id: {
-        _id: serviceData.dealer_id?._id,
-        shopName: serviceData.dealer_id?.shopName,
-        email: serviceData.dealer_id?.email,
-        phone: serviceData.dealer_id?.phone,
-      },
-      bikes: serviceData.bikes || [],
-      createdAt: serviceData.createdAt,
-      updatedAt: serviceData.updatedAt,
-    }
-
-    return res.status(200).send({
-      status: 200,
-      message: "Service retrieved successfully",
-      data: responseData,
-    })
-  } catch (error) {
-    console.error("Error fetching service by ID:", error)
-
-    if (error instanceof mongoose.Error.CastError) {
-      return res.status(200).send({
-        status: 400,
-        message: "Invalid service ID format",
-      })
-    }
-
-    return res.status(200).send({
-      status: 500,
-      message: "Internal Server Error",
-    })
-  }
-}
-
-async function updateServiceById(req, res) {
-  try {
-    const { id } = req.params
-    const { name, description, dealer_id, bikes } = req.body
-
-    // Validate: name
-    if (!name || name.trim() === "") {
-      return res.status(200).send({
-        status: 400,
-        message: "Service name is required.",
-        field: "name",
-      })
-    }
-
-    // Validate: dealer_id
-    if (!dealer_id || !mongoose.Types.ObjectId.isValid(dealer_id)) {
-      return res.status(200).send({
-        status: 400,
-        message: "Valid dealer ID is required.",
-        field: "dealer_id",
-      })
-    }
-
-    // Validate and parse bikes
-    let parsedBikes = []
-
-    if (!bikes) {
-      return res.status(200).send({
-        status: 400,
-        message: "Bikes field is required.",
-        field: "bikes",
-      })
-    }
-
-    try {
-      if (typeof bikes === "string") {
-        if (bikes.trim() === "") {
-          return res.status(200).send({
-            status: 400,
-            message: "Bikes field is required.",
-            field: "bikes",
-          })
-        }
-        parsedBikes = JSON.parse(bikes)
-      } else {
-        parsedBikes = bikes
-      }
-
-      if (!Array.isArray(parsedBikes) || parsedBikes.length === 0) {
-        return res.status(200).send({
-          status: 400,
-          message: "Bikes must be a non-empty array.",
-          field: "bikes",
-        })
-      }
-
-      for (let i = 0; i < parsedBikes.length; i++) {
-        const bike = parsedBikes[i]
-
-        // Convert to numbers
-        bike.cc = Number(bike.cc)
-        bike.price = Number(bike.price)
-
-        if (isNaN(bike.cc) || isNaN(bike.price)) {
-          return res.status(200).send({
-            status: 400,
-            message: `Bike at index ${i} must have numeric 'cc' and 'price' values.`,
-            field: "bikes",
-          })
-        }
-      }
-    } catch (err) {
-      return res.status(200).send({
-        status: 400,
-        message: "Invalid bikes format. Must be JSON array.",
-        field: "bikes",
-      })
-    }
-
-    // Handle image
-    const image = req.file ? `uploads/services/${req.file.filename}` : ""
-
-    // multer will save image file
-
-    // Create service
-    const newService = await service.create({
-      name: name.trim(),
-      description: description?.trim() || "",
-      image,
-      dealer_id,
-      bikes: parsedBikes,
-    })
-
-    return res.status(200).send({
-      status: 200,
-      message: "Service added successfully",
-      data: newService,
-    })
-  } catch (error) {
-    console.error("Error adding service:", error)
-    return res.status(200).send({
-      status: 500,
-      message: "Internal Server Error",
-    })
-  }
-}
-
 module.exports = {
-  servicelist,
-  singleService,
-  updateService,
-  deleteService,
   getServicesByDealer,
   addAdminService,
   listAdminServices,
-  getServiceById,
-  updateServiceById,
   addAdditionalService,
   additionalservicelist,
   deleteAdditionaalService,

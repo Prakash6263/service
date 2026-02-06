@@ -1,4 +1,3 @@
-const service = require("../models/service_model");
 const offer = require('../models/offer_model'); 
 const jwt_decode = require("jwt-decode");
 const Role = require('../models/Roles_modal')

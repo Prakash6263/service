@@ -4,15 +4,9 @@ var fs = require("fs")
 var path = require("path")
 
 var {
-  servicelist,
-  updateService,
-  deleteService,
-  singleService,
   getServicesByDealer,
   addAdminService,
   listAdminServices,
-  getServiceById,
-  updateServiceById,
   addAdditionalService,
   additionalservicelist,
   deleteAdditionaalService,
@@ -35,23 +29,6 @@ var {
 var { PicknDrop } = require("../controller/pickupndrop")
 
 const router = express.Router()
-
-/* =====================================================
-   DEALER SERVICES → uploads/services
-===================================================== */
-const dealerServiceDir = path.join(__dirname, "../uploads/services")
-if (!fs.existsSync(dealerServiceDir)) {
-  fs.mkdirSync(dealerServiceDir, { recursive: true })
-}
-
-const dealerServiceUpload = multer({
-  storage: multer.diskStorage({
-    destination: dealerServiceDir,
-    filename: (req, file, cb) => {
-      cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`)
-    },
-  }),
-})
 
 /* =====================================================
    ADMIN SERVICES → uploads/admin-services
@@ -105,20 +82,7 @@ const additionalServiceUpload = multer({
 })
 
 /* =====================================================
-   DEALER SERVICE ROUTES
-===================================================== */
-router.get("/servicelist", servicelist)
-router.get("/edit-service/:id", getServiceById)
-
-router.put("/update-service/:id", dealerServiceUpload.single("images"), updateServiceById)
-
-router.put("/updateservice", dealerServiceUpload.fields([{ name: "service_image", maxCount: 1 }]), updateService)
-
-router.delete("/deleteService", deleteService)
-router.get("/service/:id", singleService)
-
-/* =====================================================
-   NEW: DEALER SERVICES (Read-Only) - MUST BE BEFORE :dealer_id
+   DEALER SERVICES (Read-Only) - MUST BE BEFORE :dealer_id
 ===================================================== */
 router.get("/dealer/services", getDealerServices)
 
@@ -146,11 +110,12 @@ router.put("/admin/base-services/:id", baseServiceUpload.single("image"), update
 router.delete("/admin/base-services/:id", deleteBaseService)
 
 /* =====================================================
-   ADMIN SERVICE ROUTES (Refactored)
+   ADMIN SERVICE ROUTES
 ===================================================== */
 router.post("/adminservices/create", adminServiceUpload.single("image"), addAdminService)
 
 router.get("/adminservices", listAdminServices)
+
 router.get("/admin/services/:id", getAdminServiceById)
 
 router.put("/admin/services/:id", adminServiceUpload.single("image"), updateAdminService)

@@ -1,5 +1,5 @@
 const salientfeature = require("../models/Salient_feature");
-const service = require("../models/service_model");
+const BaseService = require("../models/baseService");
 const jwt_decode = require("jwt-decode");
 
 
@@ -22,7 +22,7 @@ async function addfeature(req, res) {
         const {service_id, name, description} = req.body;
         
 
-        let services = await service.findById(service_id);
+        let services = await BaseService.findById(service_id);
         if(!services){
             res.status(401).json({ error: "No Service exists" })
             return;
