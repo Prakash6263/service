@@ -1,5 +1,6 @@
 require("dotenv").config();
 const Vendor = require("../models/dealerModel");
+const Dealer = Vendor; // Alias for backward compatibility
 const jwt_decode = require("jwt-decode");
 var validation = require("../helper/validation");
 const Rating = require("../models/rating_model");
