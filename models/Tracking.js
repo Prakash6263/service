@@ -13,11 +13,11 @@ const trackingSchema = new mongoose.Schema({
     },
     service_id:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"service"
+        ref:"AdminService"
     },
     services:[{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"service"
+        ref:"AdminService"
     }],
     dealer_id:{
         type:mongoose.Schema.Types.ObjectId,

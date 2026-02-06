@@ -1418,8 +1418,8 @@ async function getShopDetails(req, res) {
       return res.status(404).json({ success: false, message: "Dealer not found!" });
     }
 
-    // Fetch AdminServices that include this dealer in their dealers array
-    let adminServices = await AdminService.find({ dealers: dealer_id })
+    // Fetch AdminServices that include this dealer
+    let adminServices = await AdminService.find({ dealer_id: dealer_id })
       .populate({
         path: 'base_service_id',
         select: 'name description image'
