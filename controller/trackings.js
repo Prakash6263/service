@@ -1,8 +1,8 @@
 var Tracking = require("../models/Tracking");
 var booking  = require("../models/Booking");
-var mongoose = require('mongoose'); // ES5 or below
+var mongoose = require('mongoose');
 const jwt_decode = require("jwt-decode");
-const Dealer  = require("../models/Dealer")
+const Dealer  = require("../models/dealerModel")
 
 
 async function gettracking(req, res) {

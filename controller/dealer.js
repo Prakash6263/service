@@ -1,5 +1,4 @@
 require("dotenv").config();
-const Dealer = require("../models/Dealer");
 const Vendor = require("../models/dealerModel");
 const jwt_decode = require("jwt-decode");
 var validation = require("../helper/validation");
@@ -136,7 +135,7 @@ const dealerWithInRange2 = async (req, res) => {
     console.log(`📍 Searching dealers near lat: ${userLat}, lon: ${userLon} with variant_id: ${variant_id}`);
 
     // Step 1: Fetch all active dealers within 3km and ensure they are not blocked
-    const dealers = await Dealer.find({
+    const dealers = await Vendor.find({
       is_online: "on",
       wallet: { $gt: -500 },
       isBlock: false
@@ -180,7 +179,7 @@ async function addAmount(req, res) {
     const dealerId = req.params.id;
     const orderAmount = 100;
 
-    const dealer = await Dealer.findById(dealerId);
+    const dealer = await Vendor.findById(dealerId);
     console.log(dealer)
 
     if (!dealer) {
@@ -512,7 +511,7 @@ async function editDealerStatus(req, res) {
     };
     var where = { _id: dealer_id };
 
-    Dealer.findByIdAndUpdate(
+    Vendor.findByIdAndUpdate(
       where,
       { $set: datas },
       { new: true },

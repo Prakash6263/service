@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 const jwt = require('jsonwebtoken');
 const jwt_decode = require("jwt-decode");
-const Dealer = require("../models/Dealer");
+const Dealer = require("../models/dealerModel");
 
 // import env from '../../env';
 

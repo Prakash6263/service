@@ -1,5 +1,5 @@
 const user = require('../models/customer_model');
-const dealer = require('../models/Dealer');
+const dealer = require('../models/dealerModel');
 const Report = require('../models/report_Model')
 const booking = require('../models/Booking');
 const jwt_decode = require('jwt-decode');

@@ -1515,7 +1515,6 @@
 
 var validation = require("../helper/validation")
 const otpAuth = require("../helper/otpAuth")
-const Dealer = require("../models/Dealer")
 const Vendor = require("../models/dealerModel")
 const Admin = require("../models/admin_model")
 const jwt = require("jsonwebtoken")
@@ -1527,12 +1526,12 @@ async function sendOtp(req, res) {
     const { phone } = req.body
 
     if (phone != "" || phone === null) {
-      var userResm = await Dealer.findOne({ phone })
+      var userResm = await Vendor.findOne({ phone })
 
       if (userResm) {
         const data = await otpAuth.otp(phone)
 
-        Dealer.findByIdAndUpdate({ _id: userResm._id }, { otp: data.otp }, { new: true }, async (err, docs) => {
+        Vendor.findByIdAndUpdate({ _id: userResm._id }, { otp: data.otp }, { new: true }, async (err, docs) => {
           if (err) {
             return res.status(201).send({
               status: 201,

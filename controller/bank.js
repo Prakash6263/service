@@ -1,7 +1,7 @@
 var Bank = require("../models/Bank");
 const jwt_decode = require("jwt-decode");
 const fetch = require("node-fetch");
-const Dealer = require("../models/Dealer");
+const Dealer = require("../models/dealerModel");
 
 
 async function addBank(req, res) {

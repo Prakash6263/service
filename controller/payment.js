@@ -20,7 +20,7 @@ const CryptoJS = require('crypto-js');
 const QRCode = require('qrcode');
 const API_KEY_ID = process.env.API_KEY_ID_RAZO;
 const API_KEY_SECRET = process.env.API_KEY_SECRET_RAZO;
-const Vendor = require("../models/Dealer");
+const Vendor = require("../models/dealerModel");
 const Customer = require("../models/customer_model");
 const Bill = require("../models/billSchema");
 
